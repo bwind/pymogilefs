@@ -1,3 +1,3 @@
 #!/bin/sh
-nosetests --with-coverage
+nosetests -s --with-coverage
 
