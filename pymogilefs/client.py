@@ -12,11 +12,11 @@ class Client:
     def get_hosts(self):
         return self._do_request(GetHostsConfig)
 
-    def create_host(self, **kwargs):
-        return self._do_request(CreateHostConfig, **kwargs)
+    def create_host(self, host, ip, port):
+        return self._do_request(CreateHostConfig, host=host, ip=ip, port=port)
 
-    def update_host(self, **kwargs):
-        return self._do_request(UpdateHostConfig, **kwargs)
+    def update_host(self, host, ip, port):
+        return self._do_request(UpdateHostConfig, host=host, ip=ip, port=port)
 
     def delete_host(self, host):
         return self._do_request(DeleteHostConfig, host=host)
