@@ -2,3 +2,5 @@ __pycache__
 .coverage
 env/
 .env
+.tox
+pymogilefs.egg-info/
