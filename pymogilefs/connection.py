@@ -1,4 +1,4 @@
-from pymogilefs.response import Response
+from pymogilefs.mogilefs_response import MogilefsResponse
 import socket
 import io
 
@@ -21,10 +21,10 @@ class Connection:
             response_text += self._sock.recv(BUFSIZE)
             if response_text[-2:] == b'\r\n':
                 break
-        return response_text
+        return response_text.decode()
 
     def do_request(self, request):
         self._sock.send(bytes(request))
         response_text = self._recv_all()
         self._sock.close()
-        return Response(response_text)
+        return MogilefsResponse(response_text)
