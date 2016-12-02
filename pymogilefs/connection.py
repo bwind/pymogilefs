@@ -1,4 +1,4 @@
-from pymogilefs.mogilefs_response import MogilefsResponse
+from pymogilefs.response import Response
 import socket
 import io
 
@@ -27,4 +27,4 @@ class Connection:
         self._sock.send(bytes(request))
         response_text = self._recv_all()
         self._sock.close()
-        return MogilefsResponse(response_text, request.config)
+        return Response(response_text, request.config)

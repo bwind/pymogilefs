@@ -2,10 +2,10 @@ from pymogilefs.exceptions import RequestError
 import re
 
 
-class MogilefsResponse:
-    def __init__(self, buf, config):
-        assert isinstance(buf, str)
-        status, response_text = buf.strip().split(' ', 1)
+class Response:
+    def __init__(self, response_text, config):
+        assert isinstance(response_text, str)
+        status, response_text = response_text.strip().split(' ', 1)
         if status == 'ERR':
             code, message = response_text.split(' ', 1)
             raise RequestError(code, message)

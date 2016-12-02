@@ -6,14 +6,14 @@ from pymogilefs.client import (
     GetDomainsConfig,
     GetDevicesConfig,
 )
-from pymogilefs.mogilefs_response import MogilefsResponse
+from pymogilefs.response import Response
 from unittest.mock import MagicMock
 from unittest import TestCase
 
 
 class ClientTest(TestCase):
     def test_get_hosts(self):
-        return_value = MogilefsResponse('OK host6_hostip=10.0.0.25&host6_http_port=7500&host8_hostname=\r\n',
+        return_value = Response('OK host6_hostip=10.0.0.25&host6_http_port=7500&host8_hostname=\r\n',
                                         GetHostsConfig)
         Backend.do_request = MagicMock(return_value=return_value)
         hosts = Client([]).get_hosts()
@@ -23,7 +23,7 @@ class ClientTest(TestCase):
         self.assertIn(expected[1], hosts)
 
     def test_get_domains(self):
-        return_value = MogilefsResponse('OK domain15class1name=default&domain25class1name=default&domain41class1mindevcount=2\r\n',
+        return_value = Response('OK domain15class1name=default&domain25class1name=default&domain41class1mindevcount=2\r\n',
                                         GetDomainsConfig)
         Backend.do_request = MagicMock(return_value=return_value)
         domains = Client([]).get_domains()
@@ -35,7 +35,7 @@ class ClientTest(TestCase):
         self.assertIn(expected[2], domains)
 
     def test_get_devices(self):
-        return_value = MogilefsResponse('OK dev27_mb_asof=&dev27_mb_total=1870562&dev26_mb_used=76672\r\n',
+        return_value = Response('OK dev27_mb_asof=&dev27_mb_total=1870562&dev26_mb_used=76672\r\n',
                                         GetDevicesConfig)
         Backend.do_request = MagicMock(return_value=return_value)
         devices = Client([]).get_devices()
@@ -45,7 +45,7 @@ class ClientTest(TestCase):
         self.assertIn(expected[1], devices)
 
     def test_create_host(self):
-        return_value = MogilefsResponse('OK hostid=4&hostname=localhost\r\n',
+        return_value = Response('OK hostid=4&hostname=localhost\r\n',
                                         CreateHostConfig)
         Backend.do_request = MagicMock(return_value=return_value)
         response = Client([]).create_host(host='localhost',
