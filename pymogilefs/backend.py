@@ -6,6 +6,8 @@ import random
 Backend manages a pool of trackers and balances load between them.
 """
 
+# TODO: mark tracker as dead
+
 
 MAX_RETRIES = 5
 

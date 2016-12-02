@@ -7,8 +7,7 @@ class Client:
         self._backend = Backend(trackers)
 
     def get_hosts(self):
-        response = self._backend.do_request(Request(Hosts.COMMAND),
-                                            Hosts.PREFIX_RE)
+        response = self._backend.do_request(Request(Hosts))
         return response.items
 
     def create_host(self):
@@ -21,8 +20,7 @@ class Client:
         pass
 
     def get_domains(self):
-        response = self._backend.do_request(Request(Domains.COMMAND),
-                                            Domains.PREFIX_RE)
+        response = self._backend.do_request(Request(Domains))
         return response.items
 
     def create_domain(self):
@@ -44,7 +42,8 @@ class Client:
         pass
 
     def get_devices(self):
-        pass
+        response = self._backend.do_request(Request(Devices))
+        return response.items
 
     def create_device(self):
         pass
@@ -70,4 +69,9 @@ class Hosts:
 class Domains:
     COMMAND = 'get_domains'
     PREFIX_RE = r'domain[0-9]+'
+
+
+class Devices:
+    COMMAND = 'get_devices'
+    PREFIX_RE = r'dev[0-9]+_'
 

@@ -3,15 +3,16 @@ import re
 
 
 class MogilefsResponse:
-    def __init__(self, buf, prefix_re=None):
+    def __init__(self, buf, config):
         assert isinstance(buf, str)
         status, response_text = buf.strip().split(' ', 1)
         if status == 'ERR':
             code, message = response_text.split(' ', 1)
             raise RequestError(code, message)
         self.text = response_text
-        if prefix_re:
-            self.items = self._parse_response_text(response_text, prefix_re)
+        self._config = config
+        self.items = self._parse_response_text(response_text,
+                                               self._config.PREFIX_RE)
 
     def _parse_response_text(self, response_text, prefix_re):
         topics = {}

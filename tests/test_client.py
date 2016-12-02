@@ -1,5 +1,5 @@
 from pymogilefs.backend import Backend
-from pymogilefs.client import Client
+from pymogilefs.client import Client, Hosts, Domains, Devices
 from pymogilefs.mogilefs_response import MogilefsResponse
 from unittest.mock import MagicMock
 from unittest import TestCase
@@ -8,10 +8,32 @@ from unittest import TestCase
 class ClientTest(TestCase):
     def test_get_hosts(self):
         return_value = MogilefsResponse('OK host6_hostip=10.0.0.25&host6_http_port=7500&host8_hostname=\r\n',
-                                        r'host[0-9]+_')
+                                        Hosts)
         Backend.do_request = MagicMock(return_value=return_value)
         hosts = Client([]).get_hosts()
         expected = [{'hostip': '10.0.0.25', 'http_port': '7500'},
                     {'hostname': ''}]
         self.assertIn(expected[0], hosts)
         self.assertIn(expected[1], hosts)
+
+    def test_get_domains(self):
+        return_value = MogilefsResponse('OK domain15class1name=default&domain25class1name=default&domain41class1mindevcount=2\r\n',
+                                        Domains)
+        Backend.do_request = MagicMock(return_value=return_value)
+        domains = Client([]).get_domains()
+        expected = [{'class1name': 'default'},
+                    {'class1name': 'default'},
+                    {'class1mindevcount': '2'}]
+        self.assertIn(expected[0], domains)
+        self.assertIn(expected[1], domains)
+        self.assertIn(expected[2], domains)
+
+    def test_get_devices(self):
+        return_value = MogilefsResponse('OK dev27_mb_asof=&dev27_mb_total=1870562&dev26_mb_used=76672\r\n',
+                                        Devices)
+        Backend.do_request = MagicMock(return_value=return_value)
+        devices = Client([]).get_devices()
+        expected = [{'mb_asof': '', 'mb_total': '1870562'},
+                    {'mb_used': '76672'}]
+        self.assertIn(expected[0], devices)
+        self.assertIn(expected[1], devices)
