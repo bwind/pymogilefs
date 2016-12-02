@@ -11,17 +11,7 @@ class ClientTest(TestCase):
                                         r'host[0-9]+_')
         Backend.do_request = MagicMock(return_value=return_value)
         hosts = Client([]).get_hosts()
-        expected = [
-            {
-                'hostip': '10.0.0.25',
-                'http_port': '7500',
-            },
-            {
-                'hostname': '',
-            },
-        ]
+        expected = [{'hostip': '10.0.0.25', 'http_port': '7500'},
+                    {'hostname': ''}]
         self.assertIn(expected[0], hosts)
         self.assertIn(expected[1], hosts)
-
-    def test_get_domains(self):
-        pass
