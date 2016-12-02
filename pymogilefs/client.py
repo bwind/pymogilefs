@@ -6,12 +6,14 @@ class Client:
     def __init__(self, trackers):
         self._backend = Backend(trackers)
 
-    def get_hosts(self):
-        response = self._backend.do_request(Request(Hosts))
-        return response.items
+    def _do_request(self, config, **kwargs):
+        return self._backend.do_request(Request(config, **kwargs)).items
 
-    def create_host(self):
-        pass
+    def get_hosts(self):
+        return self._do_request(GetHostsConfig)
+
+    def create_host(self, **kwargs):
+        return self._do_request(CreateHostConfig, **kwargs)
 
     def update_host(self):
         pass
@@ -20,8 +22,7 @@ class Client:
         pass
 
     def get_domains(self):
-        response = self._backend.do_request(Request(Domains))
-        return response.items
+        return self._do_request(GetDomainsConfig)
 
     def create_domain(self):
         pass
@@ -42,8 +43,7 @@ class Client:
         pass
 
     def get_devices(self):
-        response = self._backend.do_request(Request(Devices))
-        return response.items
+        return self._do_request(GetDevicesConfig)
 
     def create_device(self):
         pass
@@ -61,17 +61,22 @@ class Client:
         pass
 
 
-class Hosts:
+class GetHostsConfig:
     COMMAND = 'get_hosts'
-    PREFIX_RE = r'host[0-9]+_'
+    PREFIX_RE = r'^host[0-9]+_'
 
 
-class Domains:
+class CreateHostConfig:
+    COMMAND = 'create_host'
+    PREFIX_RE = r'^host'
+
+
+class GetDomainsConfig:
     COMMAND = 'get_domains'
-    PREFIX_RE = r'domain[0-9]+'
+    PREFIX_RE = r'^domain[0-9]+'
 
 
-class Devices:
+class GetDevicesConfig:
     COMMAND = 'get_devices'
-    PREFIX_RE = r'dev[0-9]+_'
+    PREFIX_RE = r'^dev[0-9]+_'
 

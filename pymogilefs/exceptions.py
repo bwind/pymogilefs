@@ -1,3 +1,6 @@
+import urllib
+
+
 class NoTrackersAvailableError(Exception):
     pass
 
@@ -5,7 +8,7 @@ class NoTrackersAvailableError(Exception):
 class RequestError(Exception):
     def __init__(self, code, message):
         self.code = code
-        self.message = message
+        self.message = urllib.parse.unquote_plus(message)
 
     def __str__(self):
-        return '%s %s' % (self.code, self.message)
+        return '%s: %s' % (self.code, self.message)

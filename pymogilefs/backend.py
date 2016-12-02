@@ -23,5 +23,5 @@ class Backend:
         connection._connect()
         return connection
 
-    def do_request(self, request, prefix_re=None):
-        return self._get_connection().do_request(request, prefix_re)
+    def do_request(self, request):
+        return self._get_connection().do_request(request)

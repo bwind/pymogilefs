@@ -10,9 +10,9 @@ class MogilefsResponse:
             code, message = response_text.split(' ', 1)
             raise RequestError(code, message)
         self.text = response_text
-        self._config = config
+        self.config = config
         self.items = self._parse_response_text(response_text,
-                                               self._config.PREFIX_RE)
+                                               self.config.PREFIX_RE)
 
     def _parse_response_text(self, response_text, prefix_re):
         topics = {}
