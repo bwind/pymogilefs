@@ -6,8 +6,9 @@ from unittest import TestCase
 
 
 class ClientTest(TestCase):
-    def test_get_hosts_dict(self):
-        return_value = MogilefsResponse('OK host6_hostip=10.0.0.25&host6_http_port=7500&host8_hostname=\r\n')
+    def test_get_hosts(self):
+        return_value = MogilefsResponse('OK host6_hostip=10.0.0.25&host6_http_port=7500&host8_hostname=\r\n',
+                                        r'host[0-9]+_')
         Backend.do_request = MagicMock(return_value=return_value)
         hosts = Client([]).get_hosts()
         expected = [
@@ -19,4 +20,8 @@ class ClientTest(TestCase):
                 'hostname': '',
             },
         ]
-        self.assertEqual(hosts, expected)
+        self.assertIn(expected[0], hosts)
+        self.assertIn(expected[1], hosts)
+
+    def test_get_domains(self):
+        pass

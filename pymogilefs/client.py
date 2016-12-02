@@ -7,15 +7,9 @@ class Client:
         self._backend = Backend(trackers)
 
     def get_hosts(self):
-        response = self._backend.do_request(Request('get_hosts'))
-        pairs = [pair.split('=') for pair in response.text.split('&')]
-        hosts = {}
-        for key, value in pairs:
-            index = key[4:5]
-            if index not in hosts:
-                hosts[index] = {}
-            hosts[index][key[6:]] = value
-        return list(hosts.values())
+        response = self._backend.do_request(Request(Hosts.COMMAND),
+                                            Hosts.PREFIX_RE)
+        return response.items
 
     def create_host(self):
         pass
@@ -27,7 +21,9 @@ class Client:
         pass
 
     def get_domains(self):
-        pass
+        response = self._backend.do_request(Request(Domains.COMMAND),
+                                            Domains.PREFIX_RE)
+        return response.items
 
     def create_domain(self):
         pass
@@ -64,3 +60,14 @@ class Client:
 
     def clear_cache(self):
         pass
+
+
+class Hosts:
+    COMMAND = 'get_hosts'
+    PREFIX_RE = r'host[0-9]+_'
+
+
+class Domains:
+    COMMAND = 'get_domains'
+    PREFIX_RE = r'domain[0-9]+'
+

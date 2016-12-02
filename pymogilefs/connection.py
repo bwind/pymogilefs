@@ -23,8 +23,8 @@ class Connection:
                 break
         return response_text.decode()
 
-    def do_request(self, request):
+    def do_request(self, request, prefix_re=None):
         self._sock.send(bytes(request))
         response_text = self._recv_all()
         self._sock.close()
-        return MogilefsResponse(response_text)
+        return MogilefsResponse(response_text, prefix_re)
