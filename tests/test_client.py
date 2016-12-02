@@ -4,6 +4,7 @@ from pymogilefs.client import (
     GetHostsConfig,
     CreateHostConfig,
     UpdateHostConfig,
+    DeleteHostConfig,
     GetDomainsConfig,
     GetDevicesConfig,
 )
@@ -37,11 +38,18 @@ class HostTestCase(TestCase):
         return_value = Response('OK hostid=7&hostname=hostname\r\n',
                                 UpdateHostConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
-            response = Client(['0.0.0.0:7001']).update_host(host='localhost',
+            response = Client([]).update_host(host='localhost',
                                               ip='0.0.0.0',
                                               port=7001)
             expected = [{'id': '7', 'name': 'hostname'}]
             self.assertEqual(response, expected)
+
+    def test_delete_host(self):
+        return_value = Response('OK \r\n',
+                                DeleteHostConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            response = Client([]).delete_host(host='localhost')
+            self.assertEqual(response, {})
 
 
 class DomainTestCase(TestCase):

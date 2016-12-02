@@ -18,8 +18,8 @@ class Client:
     def update_host(self, **kwargs):
         return self._do_request(UpdateHostConfig, **kwargs)
 
-    def delete_host(self):
-        pass
+    def delete_host(self, host):
+        return self._do_request(DeleteHostConfig, host=host)
 
     def get_domains(self):
         return self._do_request(GetDomainsConfig)
@@ -73,6 +73,11 @@ class CreateHostConfig:
 
 class UpdateHostConfig:
     COMMAND = 'update_host'
+    PREFIX_RE = r'^host'
+
+
+class DeleteHostConfig:
+    COMMAND = 'delete_host'
     PREFIX_RE = r'^host'
 
 
