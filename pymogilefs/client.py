@@ -131,3 +131,13 @@ class GetDevicesConfig:
 class CreateDeviceConfig:
     COMMAND = 'create_device'
     PREFIX_RE = r'^dev[0-9]+_'
+
+
+class SetStateConfig:
+    COMMAND = 'set_state'
+    PREFIX_RE = r'^foo'
+
+
+class SetWeightConfig:
+    COMMAND = 'set_weight'
+    PREFIX_RE = r'^foo'
