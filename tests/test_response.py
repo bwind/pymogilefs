@@ -1,5 +1,5 @@
 from pymogilefs.client import GetHostsConfig
-from pymogilefs.exceptions import RequestError
+from pymogilefs.exceptions import MogilefsError
 from pymogilefs.response import Response
 import unittest
 
@@ -16,7 +16,7 @@ class ResponseTest(unittest.TestCase):
 
     def test_instantiate_with_error(self):
         response_text = 'ERR unknown_command Unknown+server+command\r\n'
-        with self.assertRaises(RequestError):
+        with self.assertRaises(MogilefsError):
             Response(response_text, GetHostsConfig)
 
     def test_parse_response_text(self):

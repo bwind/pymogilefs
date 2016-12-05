@@ -4,11 +4,7 @@ except ImportError:
     from urllib import unquote_plus
 
 
-class NoTrackersAvailableError(Exception):
-    pass
-
-
-class RequestError(Exception):
+class MogilefsError(Exception):
     def __init__(self, code, message):
         self.code = code
         self.message = unquote_plus(message)

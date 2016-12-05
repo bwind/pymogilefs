@@ -1,4 +1,4 @@
-from pymogilefs.exceptions import RequestError
+from pymogilefs.exceptions import MogilefsError
 import re
 
 
@@ -8,7 +8,7 @@ class Response:
         status, response_text = response_text.split(' ', 1)
         if status == 'ERR':
             code, message = response_text.split(' ', 1)
-            raise RequestError(code, message)
+            raise MogilefsError(code, message)
         self.text = response_text.strip()
         self.config = config
         self.items = self._parse_response_text(self.text,
