@@ -15,7 +15,7 @@ setup(
     ),
     author='bwind',
     author_email='mailtobwind@gmail.com',
-    license='GPL',
+    license='MIT',
     packages=find_packages(exclude=['tests']),
     install_requires=['nose==1.3.7'],
     test_suite='tests',
