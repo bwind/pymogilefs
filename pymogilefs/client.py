@@ -54,7 +54,7 @@ class Client:
         return self._do_request(GetDevicesConfig)
 
     def create_device(self, hostname, devid, hostip, state):
-        return self._do_request(CreateClassConfig,
+        return self._do_request(CreateDeviceConfig,
                                 hostname=hostname,
                                 devid=devid,
                                 hostip=hostip,
@@ -125,4 +125,9 @@ class DeleteClassConfig:
 
 class GetDevicesConfig:
     COMMAND = 'get_devices'
+    PREFIX_RE = r'^dev[0-9]+_'
+
+
+class CreateDeviceConfig:
+    COMMAND = 'create_device'
     PREFIX_RE = r'^dev[0-9]+_'

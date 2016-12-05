@@ -11,6 +11,7 @@ from pymogilefs.client import (
     CreateClassConfig,
     DeleteClassConfig,
     GetDevicesConfig,
+    CreateDeviceConfig,
 )
 from pymogilefs.response import Response
 from unittest.mock import patch
@@ -127,7 +128,14 @@ class DeviceTestCase(TestCase):
             self.assertIn(expected[1], devices)
 
     def test_create_device(self):
-        raise NotImplementedError
+        return_value = Response('OK \r\n',
+                                CreateDeviceConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            response = Client([]).create_device(hostname='testhost10',
+                                                devid=6,
+                                                hostip='0.0.0.0',
+                                                state='alive')
+            self.assertEqual(response, {})
 
 
 class SetStateTestCase(TestCase):
