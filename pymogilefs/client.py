@@ -101,4 +101,3 @@ class GetDomainsConfig:
 class GetDevicesConfig:
     COMMAND = 'get_devices'
     PREFIX_RE = r'^dev[0-9]+_'
-

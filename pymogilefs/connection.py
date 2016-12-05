@@ -1,6 +1,5 @@
 from pymogilefs.response import Response
 import socket
-import io
 
 
 BUFSIZE = 4096

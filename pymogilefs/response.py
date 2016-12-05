@@ -26,4 +26,3 @@ class Response:
                 topics[prefix] = {}
             topics[prefix][unprefixed_key] = value
         return list(topics.values())
-

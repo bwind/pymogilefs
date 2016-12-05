@@ -1,6 +1,4 @@
 from pymogilefs.connection import Connection
-from pymogilefs.exceptions import NoTrackersAvailableError
-import random
 
 """
 Backend manages a pool of trackers and balances load between them.
