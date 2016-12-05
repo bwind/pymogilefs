@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='pymogilefs',
-    version='0.1',
+    version='0.1.0',
     description='pymogilefs',
     long_description='Python MogileFS Client',
     classifiers=(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules',
