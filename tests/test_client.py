@@ -12,6 +12,8 @@ from pymogilefs.client import (
     DeleteClassConfig,
     GetDevicesConfig,
     CreateDeviceConfig,
+    SetStateConfig,
+    SetWeightConfig,
 )
 from pymogilefs.response import Response
 from unittest.mock import patch
@@ -50,8 +52,7 @@ class HostTestCase(TestCase):
             self.assertEqual(response, expected)
 
     def test_delete_host(self):
-        return_value = Response('OK \r\n',
-                                DeleteHostConfig)
+        return_value = Response('OK \r\n', DeleteHostConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
             response = Client([]).delete_host(host='localhost')
             self.assertEqual(response, {})
@@ -128,8 +129,7 @@ class DeviceTestCase(TestCase):
             self.assertIn(expected[1], devices)
 
     def test_create_device(self):
-        return_value = Response('OK \r\n',
-                                CreateDeviceConfig)
+        return_value = Response('OK \r\n', CreateDeviceConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
             response = Client([]).create_device(hostname='testhost10',
                                                 devid=6,
@@ -140,9 +140,19 @@ class DeviceTestCase(TestCase):
 
 class SetStateTestCase(TestCase):
     def test_set_state(self):
-        raise NotImplementedError
+        return_value = Response('OK \r\n', SetStateConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            response = Client([]).set_state(host='localhost',
+                                            device=7,
+                                            state='down')
+            self.assertEqual(response, {})
 
 
 class SetWeightTestCase(TestCase):
     def test_set_weight(self):
-        raise NotImplementedError
+        return_value = Response('OK \r\n', SetWeightConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            response = Client([]).set_weight(host='testhost10',
+                                             device=6,
+                                             weight=8)
+            self.assertEqual(response, {})

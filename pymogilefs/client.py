@@ -72,6 +72,15 @@ class Client:
                                 device=device,
                                 weight=weight)
 
+    def store_file(self):
+        raise NotImplementedError
+
+    def delete_file(self):
+        raise NotImplementedError
+
+    def rename_file(self):
+        raise NotImplementedError
+
 
 class GetHostsConfig:
     COMMAND = 'get_hosts'
