@@ -7,6 +7,8 @@ from pymogilefs.client import (
     DeleteHostConfig,
     GetDomainsConfig,
     CreateDomainConfig,
+    DeleteDomainConfig,
+    CreateClassConfig,
     GetDevicesConfig,
 )
 from pymogilefs.response import Response
@@ -74,12 +76,24 @@ class DomainTestCase(TestCase):
             self.assertEqual(domains, expected)
 
     def test_delete_domain(self):
-        raise NotImplementedError
+        return_value = Response('OK domain=testdomain\r\n', DeleteDomainConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            domains = Client([]).delete_domain('testdomain')
+            expected = [{'domain': 'testdomain'}]
+            self.assertEqual(domains, expected)
 
 
 class ClassTestCase(TestCase):
     def test_create_class(self):
-        raise NotImplementedError
+        return_value = Response('OK mindevcount=2&domain=testdomain&class=testclass\r\n', CreateClassConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            classes = Client(['0.0.0.0:7001']).create_class(domain='testdomain',
+                                                            _class='testclass',
+                                                            mindevcount=2)
+            expected = {'mindevcount': '2',
+                        'domain': 'testdomain',
+                        'class': 'testclass'}
+            self.assertEqual(expected, classes[0])
 
     def test_update_class(self):
         raise NotImplementedError

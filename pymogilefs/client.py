@@ -34,10 +34,10 @@ class Client:
         raise NotImplementedError
 
     def create_class(self, domain, _class, mindevcount):
-        return self._do_request(CreateClassConfig,
-                                domain=domain,
-                                _class=_class,
-                                mindevcount=mindevcount)
+        kwargs = {'domain': domain,
+                  'class': _class,
+                  'mindevcount': mindevcount}
+        return self._do_request(CreateClassConfig, **kwargs)
 
     def update_class(self, domain, _class, mindevcount):
         return self._do_request(UpdateClassConfig,
@@ -101,6 +101,16 @@ class GetDomainsConfig:
 class CreateDomainConfig:
     COMMAND = 'create_domain'
     PREFIX_RE = r'^domain[0-9]+'
+
+
+class DeleteDomainConfig:
+    COMMAND = 'delete_domain'
+    PREFIX_RE = r'^domain[0-9]+'
+
+
+class CreateClassConfig:
+    COMMAND = 'create_class'
+    PREFIX_RE = r'^foo'
 
 
 class GetDevicesConfig:
