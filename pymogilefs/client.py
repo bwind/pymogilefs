@@ -98,6 +98,11 @@ class GetDomainsConfig:
     PREFIX_RE = r'^domain[0-9]+'
 
 
+class CreateDomainConfig:
+    COMMAND = 'create_domain'
+    PREFIX_RE = r'^domain[0-9]+'
+
+
 class GetDevicesConfig:
     COMMAND = 'get_devices'
     PREFIX_RE = r'^dev[0-9]+_'

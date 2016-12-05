@@ -6,6 +6,7 @@ from pymogilefs.client import (
     UpdateHostConfig,
     DeleteHostConfig,
     GetDomainsConfig,
+    CreateDomainConfig,
     GetDevicesConfig,
 )
 from pymogilefs.response import Response
@@ -65,6 +66,27 @@ class DomainTestCase(TestCase):
             self.assertIn(expected[1], domains)
             self.assertIn(expected[2], domains)
 
+    def test_create_domain(self):
+        return_value = Response('OK domain=testdomain\r\n', CreateDomainConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            domains = Client([]).create_domain('testdomain')
+            expected = [{'domain': 'testdomain'}]
+            self.assertEqual(domains, expected)
+
+    def test_delete_domain(self):
+        raise NotImplementedError
+
+
+class ClassTestCase(TestCase):
+    def test_create_class(self):
+        raise NotImplementedError
+
+    def test_update_class(self):
+        raise NotImplementedError
+
+    def test_delete_class(self):
+        raise NotImplementedError
+
 
 class DeviceTestCase(TestCase):
     def test_get_devices(self):
@@ -76,3 +98,16 @@ class DeviceTestCase(TestCase):
                         {'mb_used': '76672'}]
             self.assertIn(expected[0], devices)
             self.assertIn(expected[1], devices)
+
+    def test_create_device(self):
+        raise NotImplementedError
+
+
+class SetStateTestCase(TestCase):
+    def test_set_state(self):
+        raise NotImplementedError
+
+
+class SetWeightTestCase(TestCase):
+    def test_set_weight(self):
+        raise NotImplementedError
