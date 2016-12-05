@@ -1,3 +1,4 @@
 [report]
 omit =
   *unittest*
+show_missing = True
