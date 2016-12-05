@@ -46,9 +46,9 @@ class Client:
         return self._do_request(UpdateClassConfig, **kwargs)
 
     def delete_class(self, domain, _class):
-        return self._do_request(DeleteClassConfig,
-                                domain=domain,
-                                _class=_class)
+        kwargs = {'domain': domain,
+                  'class': _class}
+        return self._do_request(DeleteClassConfig, **kwargs)
 
     def get_devices(self):
         return self._do_request(GetDevicesConfig)
@@ -115,6 +115,11 @@ class CreateClassConfig:
 
 class UpdateClassConfig:
     COMMAND = 'update_class'
+    PREFIX_RE = r'^foo'
+
+
+class DeleteClassConfig:
+    COMMAND = 'delete_class'
     PREFIX_RE = r'^foo'
 
 

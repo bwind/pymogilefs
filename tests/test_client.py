@@ -9,6 +9,7 @@ from pymogilefs.client import (
     CreateDomainConfig,
     DeleteDomainConfig,
     CreateClassConfig,
+    DeleteClassConfig,
     GetDevicesConfig,
 )
 from pymogilefs.response import Response
@@ -107,7 +108,11 @@ class ClassTestCase(TestCase):
             self.assertEqual(expected, classes[0])
 
     def test_delete_class(self):
-        raise NotImplementedError
+        return_value = Response('OK domain=testdomain&class=testclass\r\n', DeleteClassConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            classes = Client([]).delete_class('testdomain', 'testclass')
+            expected = [{'domain': 'testdomain', 'class': 'testclass'}]
+            self.assertEqual(classes, expected)
 
 
 class DeviceTestCase(TestCase):
