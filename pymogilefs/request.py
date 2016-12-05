@@ -1,4 +1,7 @@
-import urllib
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 class Request:
@@ -7,5 +10,5 @@ class Request:
         self._kwargs = kwargs or {}
 
     def __bytes__(self):
-        kwargs = urllib.parse.urlencode(self._kwargs)
+        kwargs = urlencode(self._kwargs)
         return ('%s %s\r\n' % (self.config.COMMAND, kwargs)).encode('utf-8')
