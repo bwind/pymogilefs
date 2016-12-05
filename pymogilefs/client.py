@@ -24,41 +24,53 @@ class Client:
     def get_domains(self):
         return self._do_request(GetDomainsConfig)
 
-    def create_domain(self):
-        pass
+    def create_domain(self, domain):
+        return self._do_request(CreateDomainConfig, domain=domain)
 
-    def delete_domain(self):
-        pass
+    def delete_domain(self, domain):
+        return self._do_request(DeleteDomainConfig, domain=domain)
 
     def get_classes(self):
-        pass
+        raise NotImplementedError
 
-    def create_class(self):
-        pass
+    def create_class(self, domain, _class, mindevcount):
+        return self._do_request(CreateClassConfig,
+                                domain=domain,
+                                _class=_class,
+                                mindevcount=mindevcount)
 
-    def update_class(self):
-        pass
+    def update_class(self, domain, _class, mindevcount):
+        return self._do_request(UpdateClassConfig,
+                                domain=domain,
+                                _class=_class,
+                                mindevcount=mindevcount)
 
-    def delete_class(self):
-        pass
+    def delete_class(self, domain, _class):
+        return self._do_request(DeleteClassConfig,
+                                domain=domain,
+                                _class=_class)
 
     def get_devices(self):
         return self._do_request(GetDevicesConfig)
 
-    def create_device(self):
-        pass
+    def create_device(self, hostname, devid, hostip, state):
+        return self._do_request(CreateClassConfig,
+                                hostname=hostname,
+                                devid=devid,
+                                hostip=hostip,
+                                state=state)
 
-    def update_device(self):
-        pass
+    def set_state(self, host, device, state):
+        return self._do_request(SetStateConfig,
+                                host=host,
+                                device=device,
+                                state=state)
 
-    def set_state(self):
-        pass
-
-    def set_weight(self):
-        pass
-
-    def clear_cache(self):
-        pass
+    def set_weight(self, host, device, weight):
+        return self._do_request(SetWeightConfig,
+                                host=host,
+                                device=device,
+                                weight=weight)
 
 
 class GetHostsConfig:
