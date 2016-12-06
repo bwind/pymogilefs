@@ -72,7 +72,7 @@ class Client:
                                 device=device,
                                 weight=weight)
 
-    def store_file(self):
+    def store_file(self, file_handle, key, domain, _class=None):
         raise NotImplementedError
 
     def delete_file(self):
@@ -150,3 +150,21 @@ class SetStateConfig:
 class SetWeightConfig:
     COMMAND = 'set_weight'
     PREFIX_RE = r'^foo'
+
+
+class StoreFileConfig:
+    COMMAND = 'create_open'
+    PREFIX_RE = r'^'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        data = {
+            'fid': pairs['fid'],
+            'dev_count': int(pairs['dev_count']),
+            'paths': {int(key.split('_')[1]): path for key, path in
+                      pairs.items() if key.startswith('path_')},
+            'devids': {int(key.split('_')[1]): int(devid) for key, devid in
+                       pairs.items() if key.startswith('devid_')},
+        }
+        return data

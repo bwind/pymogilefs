@@ -9,8 +9,10 @@ class Response:
         if status == 'ERR':
             code, message = response_text.split(' ', 1)
             raise MogilefsError(code, message)
-        self.text = response_text.strip()
         self.config = config
+        if hasattr(self.config, 'parse_response_text'):
+            self.data = self.config.parse_response_text(response_text.strip())
+        self.text = response_text.strip()
         self.items = self._parse_response_text(self.text,
                                                self.config.PREFIX_RE)
 
