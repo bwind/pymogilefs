@@ -27,7 +27,7 @@ class HostTestCase(TestCase):
     def test_get_hosts(self):
         return_value = Response('OK host6_hostip=10.0.0.25&host6_http_port=7500&host8_hostname=\r\n',
                                 GetHostsConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             hosts = Backend([]).get_hosts().items
             expected = [{'hostip': '10.0.0.25', 'http_port': '7500'},
                         {'hostname': ''}]
@@ -37,7 +37,7 @@ class HostTestCase(TestCase):
     def test_create_host(self):
         return_value = Response('OK hostid=4&hostname=localhost\r\n',
                                 CreateHostConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             response = Backend([]).create_host(host='localhost',
                                               ip='0.0.0.0',
                                               port=7001).items
@@ -47,7 +47,7 @@ class HostTestCase(TestCase):
     def test_update_host(self):
         return_value = Response('OK hostid=7&hostname=hostname\r\n',
                                 UpdateHostConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             response = Backend([]).update_host(host='localhost',
                                               ip='0.0.0.0',
                                               port=7001).items
@@ -56,7 +56,7 @@ class HostTestCase(TestCase):
 
     def test_delete_host(self):
         return_value = Response('OK \r\n', DeleteHostConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             response = Backend([]).delete_host(host='localhost').items
             self.assertEqual(response, {})
 
@@ -65,7 +65,7 @@ class DomainTestCase(TestCase):
     def test_get_domains(self):
         return_value = Response('OK domain15class1name=default&domain25class1name=default&domain41class1mindevcount=2\r\n',
                                 GetDomainsConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             domains = Backend([]).get_domains().items
             expected = [{'class1name': 'default'},
                         {'class1name': 'default'},
@@ -76,14 +76,14 @@ class DomainTestCase(TestCase):
 
     def test_create_domain(self):
         return_value = Response('OK domain=testdomain\r\n', CreateDomainConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             domains = Backend([]).create_domain('testdomain').items
             expected = [{'domain': 'testdomain'}]
             self.assertEqual(domains, expected)
 
     def test_delete_domain(self):
         return_value = Response('OK domain=testdomain\r\n', DeleteDomainConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             domains = Backend([]).delete_domain('testdomain').items
             expected = [{'domain': 'testdomain'}]
             self.assertEqual(domains, expected)
@@ -92,7 +92,7 @@ class DomainTestCase(TestCase):
 class ClassTestCase(TestCase):
     def test_create_class(self):
         return_value = Response('OK mindevcount=2&domain=testdomain&class=testclass\r\n', CreateClassConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             classes = Backend([]).create_class(domain='testdomain',
                                               _class='testclass',
                                                mindevcount=2).items
@@ -103,7 +103,7 @@ class ClassTestCase(TestCase):
 
     def test_update_class(self):
         return_value = Response('OK mindevcount=3&domain=testdomain&class=testclass\r\n', CreateClassConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             classes = Backend([]).update_class(domain='testdomain',
                                               _class='testclass',
                                               mindevcount=3).items
@@ -114,7 +114,7 @@ class ClassTestCase(TestCase):
 
     def test_delete_class(self):
         return_value = Response('OK domain=testdomain&class=testclass\r\n', DeleteClassConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             classes = Backend([]).delete_class('testdomain', 'testclass').items
             expected = [{'domain': 'testdomain', 'class': 'testclass'}]
             self.assertEqual(classes, expected)
@@ -124,7 +124,7 @@ class DeviceTestCase(TestCase):
     def test_get_devices(self):
         return_value = Response('OK dev27_mb_asof=&dev27_mb_total=1870562&dev26_mb_used=76672\r\n',
                                 GetDevicesConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             devices = Backend([]).get_devices().items
             expected = [{'mb_asof': '', 'mb_total': '1870562'},
                         {'mb_used': '76672'}]
@@ -133,7 +133,7 @@ class DeviceTestCase(TestCase):
 
     def test_create_device(self):
         return_value = Response('OK \r\n', CreateDeviceConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             response = Backend([]).create_device(hostname='testhost10',
                                                 devid=6,
                                                 hostip='0.0.0.0',
@@ -144,7 +144,7 @@ class DeviceTestCase(TestCase):
 class SetStateTestCase(TestCase):
     def test_set_state(self):
         return_value = Response('OK \r\n', SetStateConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             response = Backend([]).set_state(host='localhost',
                                             device=7,
                                             state='down').items
@@ -154,7 +154,7 @@ class SetStateTestCase(TestCase):
 class SetWeightTestCase(TestCase):
     def test_set_weight(self):
         return_value = Response('OK \r\n', SetWeightConfig)
-        with patch.object(Backend, '_do_request', return_value=return_value):
+        with patch.object(Backend, 'do_request', return_value=return_value):
             response = Backend([]).set_weight(host='testhost10',
                                              device=6,
                                              weight=8).items
