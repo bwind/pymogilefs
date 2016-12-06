@@ -1,6 +1,5 @@
 from pymogilefs import backend
 from pymogilefs.exceptions import FileNotFoundError
-from pymogilefs.http_connection import HttpConnection
 from pymogilefs.request import Request
 import requests
 import io
@@ -32,9 +31,6 @@ class Client:
         if _class is not None:
             kwargs['class'] = _class
         response = self._do_request(backend.StoreFileConfig, **kwargs)
-        http_connection = HttpConnection()
-        http_connection.put_file(file_handle=file_handle,
-                                 uri=uri)
 
     def delete_file(self):
         raise NotImplementedError
