@@ -9,6 +9,9 @@ class Client:
     def _do_request(self, config, **kwargs):
         return self._backend.do_request(Request(config, **kwargs))
 
+    def get_file(self, uri):
+        raise NotImplementedError
+
     def store_file(self, file_handle, key, domain, _class=None):
         kwargs = {'domain': domain,
                   'key': key,
@@ -16,7 +19,7 @@ class Client:
                   'multi_dest': 1}
         if _class is not None:
             kwargs['class'] = _class
-        response = self._do_request(backend.StoreFileConfig, **kwargs).items
+        response = self._do_request(backend.StoreFileConfig, **kwargs)
         http_connection = HttpConnection(domain=self._domain,
                                          backend=self._backend)
         http_connection.put_file(file_handle=file_handle,
@@ -28,8 +31,13 @@ class Client:
     def rename_file(self):
         raise NotImplementedError
 
-    def get_paths(self):
-        raise NotImplementedError
+    def get_paths(self, domain, key, noverify=True, zone='alt', pathcount=2):
+        return self._do_request(backend.GetPathsConfig,
+                                domain=domain,
+                                key=key,
+                                noverify=1 if noverify else 0,
+                                zone=zone,
+                                pathcount=pathcount)
 
     def list_keys(self, domain, prefix, after, limit):
         return self._do_request(backend.ListKeysConfig,

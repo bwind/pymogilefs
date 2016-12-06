@@ -1,4 +1,5 @@
 from pymogilefs.connection import Connection
+import re
 
 """
 Backend manages a pool of trackers and balances load between them.
@@ -190,5 +191,20 @@ class ListKeysConfig:
             'next_after': next_after,
             'keys': {int(key.split('_')[1]): file_key for key, file_key in
                      pairs.items()},
+        }
+        return data
+
+
+class GetPathsConfig:
+    COMMAND = 'get_paths'
+    PREFIX_RE = r'^'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        data = {
+            'path_count': int(pairs['paths']),
+            'paths': {int(key.replace('path', '')): path for key, path in
+                      pairs.items() if re.match(r'^path[0-9]+$', key)}
         }
         return data
