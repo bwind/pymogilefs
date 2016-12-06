@@ -21,29 +21,29 @@ class Backend:
         connection._connect()
         return connection
 
-    def _do_request(self, request):
+    def do_request(self, request):
         return self._get_connection().do_request(request)
 
     def get_hosts(self):
-        return self._do_request(GetHostsConfig)
+        return self.do_request(GetHostsConfig)
 
     def create_host(self, host, ip, port):
-        return self._do_request(CreateHostConfig, host=host, ip=ip, port=port)
+        return self.do_request(CreateHostConfig, host=host, ip=ip, port=port)
 
     def update_host(self, host, ip, port):
-        return self._do_request(UpdateHostConfig, host=host, ip=ip, port=port)
+        return self.do_request(UpdateHostConfig, host=host, ip=ip, port=port)
 
     def delete_host(self, host):
-        return self._do_request(DeleteHostConfig, host=host)
+        return self.do_request(DeleteHostConfig, host=host)
 
     def get_domains(self):
-        return self._do_request(GetDomainsConfig)
+        return self.do_request(GetDomainsConfig)
 
     def create_domain(self, domain):
-        return self._do_request(CreateDomainConfig, domain=domain)
+        return self.do_request(CreateDomainConfig, domain=domain)
 
     def delete_domain(self, domain):
-        return self._do_request(DeleteDomainConfig, domain=domain)
+        return self.do_request(DeleteDomainConfig, domain=domain)
 
     def get_classes(self):
         raise NotImplementedError
@@ -52,37 +52,37 @@ class Backend:
         kwargs = {'domain': domain,
                   'class': _class,
                   'mindevcount': mindevcount}
-        return self._do_request(CreateClassConfig, **kwargs)
+        return self.do_request(CreateClassConfig, **kwargs)
 
     def update_class(self, domain, _class, mindevcount):
         kwargs = {'domain': domain,
                   'class': _class,
                   'mindevcount': mindevcount}
-        return self._do_request(UpdateClassConfig, **kwargs)
+        return self.do_request(UpdateClassConfig, **kwargs)
 
     def delete_class(self, domain, _class):
         kwargs = {'domain': domain,
                   'class': _class}
-        return self._do_request(DeleteClassConfig, **kwargs)
+        return self.do_request(DeleteClassConfig, **kwargs)
 
     def get_devices(self):
-        return self._do_request(GetDevicesConfig)
+        return self.do_request(GetDevicesConfig)
 
     def create_device(self, hostname, devid, hostip, state):
-        return self._do_request(CreateDeviceConfig,
+        return self.do_request(CreateDeviceConfig,
                                 hostname=hostname,
                                 devid=devid,
                                 hostip=hostip,
                                 state=state)
 
     def set_state(self, host, device, state):
-        return self._do_request(SetStateConfig,
+        return self.do_request(SetStateConfig,
                                 host=host,
                                 device=device,
                                 state=state)
 
     def set_weight(self, host, device, weight):
-        return self._do_request(SetWeightConfig,
+        return self.do_request(SetWeightConfig,
                                 host=host,
                                 device=device,
                                 weight=weight)
@@ -172,5 +172,23 @@ class StoreFileConfig:
                       pairs.items() if key.startswith('path_')},
             'devids': {int(key.split('_')[1]): int(devid) for key, devid in
                        pairs.items() if key.startswith('devid_')},
+        }
+        return data
+
+
+class ListKeysConfig:
+    COMMAND = 'list_keys'
+    PREFIX_RE = r'^'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        key_count = pairs.pop('key_count')
+        next_after = pairs.pop('next_after')
+        data = {
+            'key_count': int(key_count),
+            'next_after': next_after,
+            'keys': {int(key.split('_')[1]): file_key for key, file_key in
+                     pairs.items()},
         }
         return data
