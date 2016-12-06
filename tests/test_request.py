@@ -1,4 +1,4 @@
-from pymogilefs.client import GetHostsConfig
+from pymogilefs.backend import GetHostsConfig
 from pymogilefs.request import Request
 import unittest
 
