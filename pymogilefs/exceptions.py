@@ -11,3 +11,12 @@ class MogilefsError(Exception):
 
     def __str__(self):
         return '%s: %s' % (self.code, self.message)
+
+
+class FileNotFoundError(Exception):
+    def __init__(self, domain, key):
+        self.domain = domain
+        self.key = key
+
+    def __str__(self):
+        return 'File "%s" not found in domain "%s"' % (self.key, self.domain)

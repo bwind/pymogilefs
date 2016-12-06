@@ -1,5 +1,12 @@
 from pymogilefs import backend
+from pymogilefs.exceptions import FileNotFoundError
+from pymogilefs.http_connection import HttpConnection
 from pymogilefs.request import Request
+import requests
+import io
+
+
+CHUNK_SIZE = 4096
 
 
 class Client:
@@ -9,8 +16,13 @@ class Client:
     def _do_request(self, config, **kwargs):
         return self._backend.do_request(Request(config, **kwargs))
 
-    def get_file(self, uri):
-        raise NotImplementedError
+    def get_file(self, domain, key):
+        paths = self.get_paths(domain, key).data
+        if not paths['paths']:
+            raise FileNotFoundError(domain, key)
+        # TODO: randomize paths, fallback path
+        r = requests.get(paths['paths'][1], stream=True)
+        return r.raw
 
     def store_file(self, file_handle, key, domain, _class=None):
         kwargs = {'domain': domain,
@@ -20,8 +32,7 @@ class Client:
         if _class is not None:
             kwargs['class'] = _class
         response = self._do_request(backend.StoreFileConfig, **kwargs)
-        http_connection = HttpConnection(domain=self._domain,
-                                         backend=self._backend)
+        http_connection = HttpConnection()
         http_connection.put_file(file_handle=file_handle,
                                  uri=uri)
 

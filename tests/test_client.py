@@ -4,8 +4,11 @@ from pymogilefs.backend import (
     GetPathsConfig,
 )
 from pymogilefs.client import Client
+from pymogilefs.exceptions import FileNotFoundError
 from pymogilefs.response import Response
 from unittest import TestCase
+import io
+import requests
 try:
     from unittest.mock import patch
 except ImportError:
@@ -51,3 +54,21 @@ class FileTestCase(TestCase):
             self.assertIn((2, 'http://10.0.0.1:7500/dev54/0/056/254/0056254995.fid'),
                           response['paths'].items())
 
+    def test_get_file(self):
+        class FakeResponse:
+            raw = io.BytesIO(b'foo\r\n')
+        return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/254/0056254995.fid&paths=2&path2=http://10.0.0.1:7500/dev54/0/056/254/0056254995.fid\r\n',
+                                GetPathsConfig)
+        with patch.object(requests, 'get', return_value=FakeResponse):
+            with patch.object(Client, 'get_paths', return_value=return_value):
+                client = Client(Backend([]))
+                buf = client.get_file(domain='testdomain',
+                                      key='test_file_0.634434876753_1480606271.32_4')
+                self.assertEqual(buf.read(), b'foo\r\n')
+
+    def test_get_file_no_paths(self):
+        return_value = Response('OK paths=0\r\n', GetPathsConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            with self.assertRaises(FileNotFoundError):
+                Client(Backend([])).get_file(domain='testdomain',
+                                             key='doesnotexist')
