@@ -32,5 +32,8 @@ class Client:
         raise NotImplementedError
 
     def list_keys(self, domain, prefix, after, limit):
-        return self._do_request(backend.ListKeysConfig, domain=domain,
-                                prefix=prefix, after=after, limit=limit)
+        return self._do_request(backend.ListKeysConfig,
+                                domain=domain,
+                                prefix=prefix,
+                                after=after,
+                                limit=limit)
