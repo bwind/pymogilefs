@@ -1,4 +1,4 @@
 [report]
-omit =
-  *unittest*
+include =
+  pymogilefs/*
 show_missing = True
