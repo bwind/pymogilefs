@@ -1,4 +1,5 @@
 from pymogilefs.response import Response
+from pymogilefs.request import Request
 import socket
 
 
@@ -25,6 +26,7 @@ class Connection:
         return response_text.decode()
 
     def do_request(self, request):
+        assert isinstance(request, Request)
         self._sock.send(bytes(request))
         response_text = self._recv_all()
         self._sock.close()
