@@ -41,12 +41,20 @@ class Client:
                   'multi_dest': 1}
         if _class is not None:
             kwargs['class'] = _class
-        paths = self._create_open(**kwargs)
-        # TODO: try all paths
-        r = requests.put(paths.data['paths'][1], data=file_handle)
-        #response = self._do_request(backend.CreateCloseConfig, **kwargs)
-        #print(response.data)
-        return file_handle.tell()
+        paths = self._create_open(**kwargs).data
+        for idx in sorted(paths['paths'].keys()):
+            try:
+                r = requests.put(paths['paths'][1], data=file_handle)
+            except:
+                pass
+            else:
+                # Call close_open to tell the tracker where we wrote the file
+                # to and can start replicating it.
+                #response = self._do_request(backend.CreateCloseConfig, **kwargs)
+                #print(response.data)
+                return file_handle.tell()
+        # TODO: raise proper exception
+        raise
 
     def delete_file(self):
         raise NotImplementedError
