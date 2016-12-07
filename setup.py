@@ -17,7 +17,7 @@ setup(
     author_email='mailtobwind@gmail.com',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=['nose==1.3.7'],
+    install_requires=['requests==2.12.3'],
     test_suite='tests',
     include_package_data=True,
     zip_safe=False
