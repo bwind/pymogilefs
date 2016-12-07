@@ -12,3 +12,7 @@ class Request:
     def __bytes__(self):
         kwargs = urlencode(self._kwargs)
         return ('%s %s\r\n' % (self.config.COMMAND, kwargs)).encode('utf-8')
+
+    # Python 2.7 compatibility
+    def __str__(self):
+        return self.__bytes__().decode()
