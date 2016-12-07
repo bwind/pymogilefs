@@ -159,7 +159,7 @@ class SetWeightConfig:
     PREFIX_RE = r'^foo'
 
 
-class StoreFileConfig:
+class CreateOpenConfig:
     COMMAND = 'create_open'
     PREFIX_RE = r'^'
 
@@ -175,6 +175,11 @@ class StoreFileConfig:
                        pairs.items() if key.startswith('devid_')},
         }
         return data
+
+
+class CreateCloseConfig:
+    COMMAND = 'create_close'
+    PREFIX_RE = r'^'
 
 
 class ListKeysConfig:

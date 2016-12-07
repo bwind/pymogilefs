@@ -15,13 +15,24 @@ class Client:
     def _do_request(self, config, **kwargs):
         return self._backend.do_request(Request(config, **kwargs))
 
+    def _create_open(self, **kwargs):
+        return self._do_request(backend.CreateOpenConfig, **kwargs)
+
+    def _create_close(self, **kwargs):
+        return self._do_request(backend.CreateCloseConfig, **kwargs)
+
     def get_file(self, domain, key):
         paths = self.get_paths(domain, key).data
         if not paths['paths']:
             raise FileNotFoundError(domain, key)
-        # TODO: randomize paths, fallback path
-        r = requests.get(paths['paths'][1], stream=True)
-        return r.raw
+        for idx in sorted(paths['paths'].keys()):
+            try:
+                r = requests.get(paths['paths'][idx], stream=True)
+                return r.raw
+            except:
+                pass
+        # TODO: raise proper exception
+        raise
 
     def store_file(self, file_handle, key, domain, _class=None):
         kwargs = {'domain': domain,
@@ -30,7 +41,13 @@ class Client:
                   'multi_dest': 1}
         if _class is not None:
             kwargs['class'] = _class
-        response = self._do_request(backend.StoreFileConfig, **kwargs)
+        paths = self._create_open(**kwargs)
+        # TODO: try all paths
+        print(requests.put)
+        r = requests.put(paths.data['paths'][1], data=file_handle)
+        #response = self._do_request(backend.CreateCloseConfig, **kwargs)
+        #print(response.data)
+        return file_handle.tell()
 
     def delete_file(self):
         raise NotImplementedError
