@@ -24,7 +24,9 @@ class FileTestCase(TestCase):
         # through seek().
         def fake_put(path, data):
             data.read()
-        create_open = Response('OK paths=1&path1=http://10.0.0.1:7500/dev1/0/1/2/0000000001.fid&fid=56320928&dev_count=1\r\n',
+        create_open = Response('OK paths=1&path1=http://10.0.0.1:7500/dev1/0/'
+                               '1/2/0000000001.fid&fid=56320928&dev_count=1\r'
+                               '\n',
                                GetPathsConfig)
         with patch.object(Client, '_create_open', return_value=create_open), \
             patch('requests.put', new=fake_put):
@@ -36,7 +38,9 @@ class FileTestCase(TestCase):
             self.assertEqual(response, 4)
 
     def test_list_keys(self):
-        return_value = Response('OK key_3=test_file_0.0129341319339_1480606080.74&key_21=test_file_0.634434876753_1480606271.32_4&key_count=666&next_after=after\r\n',
+        return_value = Response('OK key_3=test_file_0.0129341319339_148060608'
+                                '0.74&key_21=test_file_0.634434876753_1480606'
+                                '271.32_4&key_count=666&next_after=after\r\n',
                                 ListKeysConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
             client = Client(Backend([]))
@@ -52,28 +56,32 @@ class FileTestCase(TestCase):
                           response['keys'].items())
 
     def test_get_paths(self):
-        return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/254/0056254995.fid&paths=2&path2=http://10.0.0.1:7500/dev54/0/056/254/0056254995.fid\r\n',
+        return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/25'
+                                '4/0056254995.fid&paths=2&path2=http://10.0.0'
+                                '.1:7500/dev54/0/056/254/0056254995.fid\r\n',
                                 GetPathsConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
             client = Client(Backend([]))
-            response = client.get_paths(domain='testdomain',
-                                        key='test_file_0.634434876753_1480606271.32_4').data
+            key = 'test_file_0.634434876753_1480606271.32_4'
+            response = client.get_paths(domain='testdomain', key=key).data
             self.assertEqual(response['path_count'], 2)
-            self.assertIn((1, 'http://10.0.0.2:7500/dev38/0/056/254/0056254995.fid'),
-                          response['paths'].items())
-            self.assertIn((2, 'http://10.0.0.1:7500/dev54/0/056/254/0056254995.fid'),
-                          response['paths'].items())
+            path_1 = 'http://10.0.0.2:7500/dev38/0/056/254/0056254995.fid'
+            self.assertIn((1, path_1), response['paths'].items())
+            path_2 = 'http://10.0.0.1:7500/dev54/0/056/254/0056254995.fid'
+            self.assertIn((2, path_2), response['paths'].items())
 
     def test_get_file(self):
         class FakeResponse:
             raw = io.BytesIO(b'foo\r\n')
-        return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/254/0056254995.fid&paths=2&path2=http://10.0.0.1:7500/dev54/0/056/254/0056254995.fid\r\n',
+        return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/25'
+                                '4/0056254995.fid&paths=2&path2=http://10.0.0'
+                                '.1:7500/dev54/0/056/254/0056254995.fid\r\n',
                                 GetPathsConfig)
         with patch.object(requests, 'get', return_value=FakeResponse):
             with patch.object(Client, 'get_paths', return_value=return_value):
                 client = Client(Backend([]))
-                buf = client.get_file(domain='testdomain',
-                                      key='test_file_0.634434876753_1480606271.32_4')
+                key = 'test_file_0.634434876753_1480606271.32_4'
+                buf = client.get_file(domain='testdomain', key=key)
                 self.assertEqual(buf.read(), b'foo\r\n')
 
     def test_get_file_no_paths(self):
