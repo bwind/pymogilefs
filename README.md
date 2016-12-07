@@ -1,6 +1,8 @@
 pymogilefs
 ==========
 
+[![Build Status](https://travis-ci.org/bwind/pymogilefs.svg?branch=master)](https://travis-ci.org/bwind/pymogilefs)
+
 Python client for MogileFS, based on https://github.com/AloneRoad/pymogile.
 
 There are a few Python client projects for MogileFS around (pymogile,
