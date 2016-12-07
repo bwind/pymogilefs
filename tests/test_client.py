@@ -29,9 +29,6 @@ class FileTestCase(TestCase):
                                'devid_1=57\r\n',
                                CreateOpenConfig)
         create_close = Response('OK \r\n', CreateCloseConfig)
-        print(CreateOpenConfig.parse_response_text('OK paths=1&path1=http://10.0.0.1:7500/dev1/0/'
-                               '1/2/0000000001.fid&fid=56320928&dev_count=1\r'
-                               '\n'))
         with patch.object(Client, '_create_open', return_value=create_open), \
             patch.object(Client, '_create_close', return_value=create_close), \
             patch('requests.put', new=fake_put):
