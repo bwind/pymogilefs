@@ -20,5 +20,5 @@ class ResponseTest(unittest.TestCase):
                             GetHostsConfig)
         expected = [{'hostip': '10.0.0.25', 'http_port': '7500'},
                     {'hostname': ''}]
-        self.assertIn(expected[0], response.items)
-        self.assertIn(expected[1], response.items)
+        self.assertIn(expected[0], response.data['hosts'].values())
+        self.assertIn(expected[1], response.data['hosts'].values())

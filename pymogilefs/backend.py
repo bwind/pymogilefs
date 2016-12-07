@@ -90,79 +90,122 @@ class Backend:
                                 weight=weight)
 
 
-class GetHostsConfig:
+class RequestConfig:
+    @classmethod
+    def parse_response_text(cls, response_text):
+        if not response_text:
+            return {}
+        return dict([pair.split('=') for pair in response_text.split('&')])
+
+
+class GetHostsConfig(RequestConfig):
     COMMAND = 'get_hosts'
-    PREFIX_RE = r'^host[0-9]+_'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        hosts = {}
+        for key, value in pairs.items():
+            idx, unprefixed_key = key[4:].split('_', 1)
+            idx = int(idx)
+            if idx not in hosts:
+                hosts[idx] = {}
+            hosts[idx][unprefixed_key] = value
+        return {'hosts': hosts}
 
 
-class CreateHostConfig:
+class CreateHostConfig(RequestConfig):
     COMMAND = 'create_host'
-    PREFIX_RE = r'^host'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        return {key.split('host', 1)[1]: value for key, value in pairs.items()}
 
 
-class UpdateHostConfig:
+class UpdateHostConfig(RequestConfig):
     COMMAND = 'update_host'
-    PREFIX_RE = r'^host'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        return {key.split('host', 1)[1]: value for key, value in pairs.items()}
 
 
-class DeleteHostConfig:
+class DeleteHostConfig(RequestConfig):
     COMMAND = 'delete_host'
-    PREFIX_RE = r'^host'
 
 
-class GetDomainsConfig:
+class GetDomainsConfig(RequestConfig):
     COMMAND = 'get_domains'
-    PREFIX_RE = r'^domain[0-9]+'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        domains = {}
+        pattern = r'^domain([0-9]+)class([0-9]+)([a-z]+)$'
+        for key, value in pairs.items():
+            domain_id, class_id, unprefixed_key = re.match(pattern,
+                                                           key).groups()
+            domain_id = int(domain_id)
+            class_id = int(class_id)
+            if domain_id not in domains:
+                domains[domain_id] = {'classes': {}}
+            if class_id not in domains[domain_id]['classes']:
+                domains[domain_id]['classes'][class_id] = {}
+            domains[domain_id]['classes'][class_id][unprefixed_key] = value
+        return {'domains': domains}
 
 
-class CreateDomainConfig:
+class CreateDomainConfig(RequestConfig):
     COMMAND = 'create_domain'
-    PREFIX_RE = r'^domain[0-9]+'
 
 
-class DeleteDomainConfig:
+class DeleteDomainConfig(RequestConfig):
     COMMAND = 'delete_domain'
-    PREFIX_RE = r'^domain[0-9]+'
 
 
-class CreateClassConfig:
+class CreateClassConfig(RequestConfig):
     COMMAND = 'create_class'
-    PREFIX_RE = r'^foo'
 
 
-class UpdateClassConfig:
+class UpdateClassConfig(RequestConfig):
     COMMAND = 'update_class'
-    PREFIX_RE = r'^foo'
 
 
-class DeleteClassConfig:
+class DeleteClassConfig(RequestConfig):
     COMMAND = 'delete_class'
-    PREFIX_RE = r'^foo'
 
 
-class GetDevicesConfig:
+class GetDevicesConfig(RequestConfig):
     COMMAND = 'get_devices'
-    PREFIX_RE = r'^dev[0-9]+_'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        devices = {}
+        for key, value in pairs.items():
+            idx, unprefixed_key = key[3:].split('_', 1)
+            if idx not in devices:
+                devices[idx] = {}
+            devices[idx][unprefixed_key] = value
+        return {'devices': devices}
 
 
-class CreateDeviceConfig:
+class CreateDeviceConfig(RequestConfig):
     COMMAND = 'create_device'
-    PREFIX_RE = r'^dev[0-9]+_'
 
 
-class SetStateConfig:
+class SetStateConfig(RequestConfig):
     COMMAND = 'set_state'
-    PREFIX_RE = r'^foo'
 
 
-class SetWeightConfig:
+class SetWeightConfig(RequestConfig):
     COMMAND = 'set_weight'
-    PREFIX_RE = r'^foo'
 
 
-class CreateOpenConfig:
+class CreateOpenConfig(RequestConfig):
     COMMAND = 'create_open'
-    PREFIX_RE = r'^'
 
     @classmethod
     def parse_response_text(cls, response_text):
@@ -178,18 +221,16 @@ class CreateOpenConfig:
         return data
 
 
-class CreateCloseConfig:
+class CreateCloseConfig(RequestConfig):
     COMMAND = 'create_close'
-    PREFIX_RE = r'^'
 
     @classmethod
     def parse_response_text(cls, response_text):
         return {}
 
 
-class ListKeysConfig:
+class ListKeysConfig(RequestConfig):
     COMMAND = 'list_keys'
-    PREFIX_RE = r'^'
 
     @classmethod
     def parse_response_text(cls, response_text):
@@ -205,9 +246,8 @@ class ListKeysConfig:
         return data
 
 
-class GetPathsConfig:
+class GetPathsConfig(RequestConfig):
     COMMAND = 'get_paths'
-    PREFIX_RE = r'^'
 
     @classmethod
     def parse_response_text(cls, response_text):
