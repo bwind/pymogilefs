@@ -1,7 +1,7 @@
 pymogilefs
 ==========
 
-[![Build Status](https://travis-ci.org/bwind/pymogilefs.svg?branch=master)](https://travis-ci.org/bwind/pymogilefs)
+[![Build Status](https://travis-ci.org/bwind/pymogilefs.svg?branch=master)](https://travis-ci.org/bwind/pymogilefs) [![codecov](https://codecov.io/gh/bwind/pymogilefs/branch/master/graph/badge.svg)](https://codecov.io/gh/bwind/pymogilefs)
 
 Python client for MogileFS, based on https://github.com/AloneRoad/pymogile.
 
