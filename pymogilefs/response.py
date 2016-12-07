@@ -11,6 +11,5 @@ class Response:
             code, message = response_text.split(' ', 1)
             raise MogilefsError(code, message)
         self.config = config
-        if hasattr(self.config, 'parse_response_text'):
-            self.data = self.config.parse_response_text(response_text.strip())
         self.text = response_text.strip()
+        self.data = self.config.parse_response_text(self.text)
