@@ -5,11 +5,6 @@ import unittest
 
 
 class ResponseTest(unittest.TestCase):
-    def test_instantiate_with_bytes(self):
-        response_text = b'OK host1_hostip=10.0.0.25'
-        with self.assertRaises(AssertionError):
-            Response(response_text, GetHostsConfig)
-
     def test_instantiate_with_str(self):
         response_text = 'OK host1_hostip=10.0.0.25'
         Response(response_text, GetHostsConfig)

@@ -43,7 +43,6 @@ class Client:
             kwargs['class'] = _class
         paths = self._create_open(**kwargs)
         # TODO: try all paths
-        print(requests.put)
         r = requests.put(paths.data['paths'][1], data=file_handle)
         #response = self._do_request(backend.CreateCloseConfig, **kwargs)
         #print(response.data)
