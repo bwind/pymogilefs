@@ -8,7 +8,7 @@ from pymogilefs.backend import (
 from pymogilefs.client import Client
 from pymogilefs.exceptions import FileNotFoundError
 from pymogilefs.response import Response
-from unittest import TestCase
+from unittest import TestCase, skip
 import io
 import requests
 try:
@@ -24,17 +24,23 @@ class FileTestCase(TestCase):
         # through seek().
         def fake_put(path, data):
             data.read()
-        create_open = Response('OK paths=1&path1=http://10.0.0.1:7500/dev1/0/'
+        create_open = Response('OK paths=1&path_1=http://10.0.0.1:7500/dev1/0'
+                               '/1/2/0000000001.fid&fid=56320928&dev_count=1&'
+                               'devid_1=57\r\n',
+                               CreateOpenConfig)
+        create_close = Response('OK \r\n', CreateCloseConfig)
+        print(CreateOpenConfig.parse_response_text('OK paths=1&path1=http://10.0.0.1:7500/dev1/0/'
                                '1/2/0000000001.fid&fid=56320928&dev_count=1\r'
-                               '\n',
-                               GetPathsConfig)
+                               '\n'))
         with patch.object(Client, '_create_open', return_value=create_open), \
+            patch.object(Client, '_create_close', return_value=create_close), \
             patch('requests.put', new=fake_put):
             client = Client(Backend([]))
             file_handle = io.BytesIO(b'asdf')
             response = client.store_file(file_handle=file_handle,
                                          key='testkey',
-                                         domain='testdomain')
+                                         domain='testdomain',
+                                         _class='testclass')
             self.assertEqual(response, 4)
 
     def test_list_keys(self):

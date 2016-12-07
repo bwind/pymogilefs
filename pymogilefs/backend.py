@@ -1,3 +1,4 @@
+from pymogilefs.request import Request
 from pymogilefs.connection import Connection
 import re
 
@@ -22,8 +23,8 @@ class Backend:
         connection._connect()
         return connection
 
-    def do_request(self, request):
-        return self._get_connection().do_request(request)
+    def do_request(self, config, **kwargs):
+        return self._get_connection().do_request(Request(config, **kwargs))
 
     def get_hosts(self):
         return self.do_request(GetHostsConfig)
@@ -181,6 +182,10 @@ class CreateCloseConfig:
     COMMAND = 'create_close'
     PREFIX_RE = r'^'
 
+    @classmethod
+    def parse_response_text(cls, response_text):
+        return {}
+
 
 class ListKeysConfig:
     COMMAND = 'list_keys'
@@ -210,6 +215,6 @@ class GetPathsConfig:
         data = {
             'path_count': int(pairs['paths']),
             'paths': {int(key.replace('path', '')): path for key, path in
-                      pairs.items() if re.match(r'^path[0-9]+$', key)}
+                      pairs.items() if re.match(r'^path[0-9]+$', key)},
         }
         return data

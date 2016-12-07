@@ -13,7 +13,7 @@ class Client:
         self._backend = backend
 
     def _do_request(self, config, **kwargs):
-        return self._backend.do_request(Request(config, **kwargs))
+        return self._backend.do_request(config, **kwargs)
 
     def _create_open(self, **kwargs):
         return self._do_request(backend.CreateOpenConfig, **kwargs)
@@ -32,7 +32,7 @@ class Client:
             except:
                 pass
         # TODO: raise proper exception
-        raise
+        raise #UnknownFileError
 
     def store_file(self, file_handle, key, domain, _class=None):
         kwargs = {'domain': domain,
@@ -42,19 +42,32 @@ class Client:
         if _class is not None:
             kwargs['class'] = _class
         paths = self._create_open(**kwargs).data
+        fid = paths['fid']
         for idx in sorted(paths['paths'].keys()):
+            path = paths['paths'][idx]
+            devid = paths['devids'][idx]
             try:
-                r = requests.put(paths['paths'][1], data=file_handle)
-            except:
+                r = requests.put(path, data=file_handle)
+            except: # TODO: catch specific exceptions
                 pass
             else:
                 # Call close_open to tell the tracker where we wrote the file
                 # to and can start replicating it.
-                #response = self._do_request(backend.CreateCloseConfig, **kwargs)
-                #print(response.data)
-                return file_handle.tell()
+                length = file_handle.tell()
+                kwargs = {
+                    'fid': fid,
+                    'domain': domain,
+                    'key': key,
+                    'path': path,
+                    'devid': devid,
+                    'size': length,
+                }
+                if _class is not None:
+                    kwargs['class'] = _class
+                response = self._create_close(**kwargs)
+                return length
         # TODO: raise proper exception
-        raise
+        raise #FileNotStoredError
 
     def delete_file(self):
         raise NotImplementedError
