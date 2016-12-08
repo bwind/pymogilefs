@@ -91,5 +91,4 @@ class FileTestCase(TestCase):
         return_value = Response('OK paths=0\r\n', GetPathsConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
             with self.assertRaises(FileNotFoundError):
-                Client([]).get_file(domain='testdomain',
-                                             key='doesnotexist')
+                Client([]).get_file(domain='testdomain', key='doesnotexist')
