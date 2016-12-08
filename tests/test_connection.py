@@ -1,6 +1,5 @@
 from pymogilefs.connection import Connection
 import io
-import socket
 import unittest
 try:
     from unittest import mock
