@@ -72,22 +72,22 @@ class Backend:
 
     def create_device(self, hostname, devid, hostip, state):
         return self.do_request(CreateDeviceConfig,
-                                hostname=hostname,
-                                devid=devid,
-                                hostip=hostip,
-                                state=state)
+                               hostname=hostname,
+                               devid=devid,
+                               hostip=hostip,
+                               state=state)
 
     def set_state(self, host, device, state):
         return self.do_request(SetStateConfig,
-                                host=host,
-                                device=device,
-                                state=state)
+                               host=host,
+                               device=device,
+                               state=state)
 
     def set_weight(self, host, device, weight):
         return self.do_request(SetWeightConfig,
-                                host=host,
-                                device=device,
-                                weight=weight)
+                               host=host,
+                               device=device,
+                               weight=weight)
 
 
 class RequestConfig:

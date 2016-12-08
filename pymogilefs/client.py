@@ -1,8 +1,6 @@
 from pymogilefs import backend
 from pymogilefs.exceptions import FileNotFoundError
-from pymogilefs.request import Request
 import requests
-import io
 
 
 CHUNK_SIZE = 4096
@@ -32,7 +30,7 @@ class Client:
             except:
                 pass
         # TODO: raise proper exception
-        raise #UnknownFileError
+        raise  # UnknownFileError
 
     def store_file(self, file_handle, key, domain, _class=None):
         kwargs = {'domain': domain,
@@ -47,8 +45,8 @@ class Client:
             path = paths['paths'][idx]
             devid = paths['devids'][idx]
             try:
-                r = requests.put(path, data=file_handle)
-            except: # TODO: catch specific exceptions
+                requests.put(path, data=file_handle)
+            except:  # TODO: catch specific exceptions
                 pass
             else:
                 # Call close_open to tell the tracker where we wrote the file
@@ -64,10 +62,10 @@ class Client:
                 }
                 if _class is not None:
                     kwargs['class'] = _class
-                response = self._create_close(**kwargs)
+                self._create_close(**kwargs)
                 return length
         # TODO: raise proper exception
-        raise #FileNotStoredError
+        raise  # FileNotStoredError
 
     def delete_file(self):
         raise NotImplementedError

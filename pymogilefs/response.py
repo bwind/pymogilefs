@@ -1,5 +1,4 @@
 from pymogilefs.exceptions import MogilefsError
-import re
 
 
 class Response:
