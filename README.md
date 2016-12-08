@@ -18,4 +18,23 @@ To install pymogilefs, simply:
 
     $ pip install pymogilefs
 
+Usage:
+
+    >>> from pymogilefs.client import Client
+    >>> client = Client(['0.0.0.0:7001'])
+    >>> response = client.list_keys(domain='testdomain', prefix='test', after='test', limit=10)
+    >>> print(response.data)
+    {'key_count': 10,
+     'keys': {1: 'testkey',
+              2: 'test_file2_0.115351657953_1480606271.65',
+              3: 'test_file2_0.380149553659_1480606080.71',
+              4: 'test_file_0.0129341319339_1480606080.74',
+              5: 'test_file_0.0397767495074_1480606080.8',
+              6: 'test_file_0.0865504817808_1480606081.94',
+              7: 'test_file_0.1086473832_1480606271.69',
+              8: 'test_file_0.215045162336_1480606271.45_9',
+              9: 'test_file_0.217320516944_1480606270.9',
+              10: 'test_file_0.277959960379_1480606271.23_1'},
+     'next_after': 'testkey'}
+
 Forks and pull requests are highly appreciated.
