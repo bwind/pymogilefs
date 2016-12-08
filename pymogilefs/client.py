@@ -7,8 +7,9 @@ CHUNK_SIZE = 4096
 
 
 class Client:
-    def __init__(self, trackers):
+    def __init__(self, trackers, domain):
         self._backend = backend.Backend(trackers)
+        self._domain = domain
 
     def _do_request(self, config, **kwargs):
         return self._backend.do_request(config, **kwargs)
@@ -19,10 +20,10 @@ class Client:
     def _create_close(self, **kwargs):
         return self._do_request(backend.CreateCloseConfig, **kwargs)
 
-    def get_file(self, domain, key):
-        paths = self.get_paths(domain, key).data
+    def get_file(self, key):
+        paths = self.get_paths(self._domain, key).data
         if not paths['paths']:
-            raise FileNotFoundError(domain, key)
+            raise FileNotFoundError(self._domain, key)
         for idx in sorted(paths['paths'].keys()):
             try:
                 r = requests.get(paths['paths'][idx], stream=True)
@@ -32,8 +33,8 @@ class Client:
         # TODO: raise proper exception
         raise  # UnknownFileError
 
-    def store_file(self, file_handle, key, domain, _class=None):
-        kwargs = {'domain': domain,
+    def store_file(self, file_handle, key, _class=None):
+        kwargs = {'domain': self._domain,
                   'key': key,
                   'fid': 0,
                   'multi_dest': 1}
@@ -54,7 +55,7 @@ class Client:
                 length = file_handle.tell()
                 kwargs = {
                     'fid': fid,
-                    'domain': domain,
+                    'domain': self._domain,
                     'key': key,
                     'path': path,
                     'devid': devid,
@@ -73,17 +74,17 @@ class Client:
     def rename_file(self):
         raise NotImplementedError
 
-    def get_paths(self, domain, key, noverify=True, zone='alt', pathcount=2):
+    def get_paths(self, key, noverify=True, zone='alt', pathcount=2):
         return self._do_request(backend.GetPathsConfig,
-                                domain=domain,
+                                domain=self._domain,
                                 key=key,
                                 noverify=1 if noverify else 0,
                                 zone=zone,
                                 pathcount=pathcount)
 
-    def list_keys(self, domain, prefix, after, limit):
+    def list_keys(self, prefix, after, limit):
         return self._do_request(backend.ListKeysConfig,
-                                domain=domain,
+                                domain=self._domain,
                                 prefix=prefix,
                                 after=after,
                                 limit=limit)
