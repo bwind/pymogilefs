@@ -32,7 +32,7 @@ class FileTestCase(TestCase):
         with patch.object(Client, '_create_open', return_value=create_open), \
             patch.object(Client, '_create_close', return_value=create_close), \
                 patch('requests.put', new=fake_put):
-            client = Client(Backend([]))
+            client = Client([])
             file_handle = io.BytesIO(b'asdf')
             response = client.store_file(file_handle=file_handle,
                                          key='testkey',
@@ -46,7 +46,7 @@ class FileTestCase(TestCase):
                                 '271.32_4&key_count=666&next_after=after\r\n',
                                 ListKeysConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
-            client = Client(Backend([]))
+            client = Client([])
             response = client.list_keys(domain='testdomain',
                                         prefix='test',
                                         after='test',
@@ -64,7 +64,7 @@ class FileTestCase(TestCase):
                                 '.1:7500/dev54/0/056/254/0056254995.fid\r\n',
                                 GetPathsConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
-            client = Client(Backend([]))
+            client = Client([])
             key = 'test_file_0.634434876753_1480606271.32_4'
             response = client.get_paths(domain='testdomain', key=key).data
             self.assertEqual(response['path_count'], 2)
@@ -82,7 +82,7 @@ class FileTestCase(TestCase):
                                 GetPathsConfig)
         with patch.object(requests, 'get', return_value=FakeResponse):
             with patch.object(Client, 'get_paths', return_value=return_value):
-                client = Client(Backend([]))
+                client = Client([])
                 key = 'test_file_0.634434876753_1480606271.32_4'
                 buf = client.get_file(domain='testdomain', key=key)
                 self.assertEqual(buf.read(), b'foo\r\n')
@@ -91,5 +91,5 @@ class FileTestCase(TestCase):
         return_value = Response('OK paths=0\r\n', GetPathsConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
             with self.assertRaises(FileNotFoundError):
-                Client(Backend([])).get_file(domain='testdomain',
+                Client([]).get_file(domain='testdomain',
                                              key='doesnotexist')

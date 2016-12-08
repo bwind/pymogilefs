@@ -7,8 +7,8 @@ CHUNK_SIZE = 4096
 
 
 class Client:
-    def __init__(self, backend):
-        self._backend = backend
+    def __init__(self, trackers):
+        self._backend = backend.Backend(trackers)
 
     def _do_request(self, config, **kwargs):
         return self._backend.do_request(config, **kwargs)
