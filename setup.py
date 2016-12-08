@@ -3,8 +3,9 @@ from setuptools import setup, find_packages
 setup(
     name='pymogilefs',
     version='0.1.0',
-    description='pymogilefs',
+    description='Python MogileFS Client',
     long_description='Python MogileFS Client',
+    url='https://github.com/bwind/pymogilefs',
     classifiers=(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -13,12 +14,9 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ),
-    author='bwind',
+    author='Bas Wind',
     author_email='mailtobwind@gmail.com',
     license='MIT',
-    packages=find_packages(exclude=['tests']),
+    packages=['pymogilefs'],
     install_requires=['requests==2.12.3'],
-    test_suite='tests',
-    include_package_data=True,
-    zip_safe=False
 )
