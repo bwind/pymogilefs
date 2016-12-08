@@ -20,7 +20,10 @@ class Connection:
     def _recv_all(self):
         response_text = b''
         while True:
-            response_text += self._sock.recv(BUFSIZE)
+            received = self._sock.recv(BUFSIZE)
+            if received == b'':
+                break
+            response_text += received
             if response_text[-2:] == b'\r\n':
                 break
         return response_text.decode()
