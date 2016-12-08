@@ -8,7 +8,7 @@ from pymogilefs.backend import (
 from pymogilefs.client import Client
 from pymogilefs.exceptions import FileNotFoundError
 from pymogilefs.response import Response
-from unittest import TestCase, skip
+from unittest import TestCase
 import io
 import requests
 try:
@@ -31,7 +31,7 @@ class FileTestCase(TestCase):
         create_close = Response('OK \r\n', CreateCloseConfig)
         with patch.object(Client, '_create_open', return_value=create_open), \
             patch.object(Client, '_create_close', return_value=create_close), \
-            patch('requests.put', new=fake_put):
+                patch('requests.put', new=fake_put):
             client = Client(Backend([]))
             file_handle = io.BytesIO(b'asdf')
             response = client.store_file(file_handle=file_handle,
