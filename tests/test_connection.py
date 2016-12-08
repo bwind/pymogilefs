@@ -32,7 +32,8 @@ class ConnectionTest(unittest.TestCase):
     def test_recv_all(self):
         connection = Connection('host', 1)
         connection._sock = mock.MagicMock()
-        connection._sock.recv = lambda buf_size: b'foo\r\n'
+        buf = io.BytesIO(b'foo\r\n')
+        connection._sock.recv = lambda buf_size: buf.read()
         response = connection._recv_all()
         expected = 'foo\r\n'
         self.assertEqual(response, expected)
@@ -40,7 +41,8 @@ class ConnectionTest(unittest.TestCase):
     def test_recv_all_large(self):
         connection = Connection('host', 1)
         connection._sock = mock.MagicMock()
-        connection._sock.recv = lambda buf_size: (b'foo' * 1500) + b'\r\n'
+        buf = io.BytesIO((b'foo' * 1500) + b'\r\n')
+        connection._sock.recv = lambda buf_size: buf.read(100)
         response = connection._recv_all()
         expected = ('foo' * 1500) + '\r\n'
         self.assertEqual(response, expected)
