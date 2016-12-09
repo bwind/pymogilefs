@@ -1,2 +1,2 @@
-from pymogilefs import backend, client
+from pymogilefs import backend, client, exceptions
 
