@@ -34,6 +34,17 @@ class HostTestCase(TestCase):
             self.assertIn(expected[0], hosts['hosts'].values())
             self.assertIn(expected[1], hosts['hosts'].values())
 
+    def test_get_hosts_with_hosts(self):
+        return_value = Response('OK host6_hostip=10.0.0.25&host6_http_port=75'
+                                '00&host8_hostname=&hosts=10\r\n',
+                                GetHostsConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            hosts = Backend([]).get_hosts().data
+            expected = [{'hostip': '10.0.0.25', 'http_port': '7500'},
+                        {'hostname': ''}]
+            self.assertIn(expected[0], hosts['hosts'].values())
+            self.assertIn(expected[1], hosts['hosts'].values())
+
     def test_create_host(self):
         return_value = Response('OK hostid=4&hostname=localhost\r\n',
                                 CreateHostConfig)

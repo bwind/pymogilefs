@@ -105,6 +105,8 @@ class GetHostsConfig(RequestConfig):
     def parse_response_text(cls, response_text):
         pairs = dict([pair.split('=') for pair in response_text.split('&')])
         hosts = {}
+        if 'hosts' in pairs:
+            del pairs['hosts']
         for key, value in pairs.items():
             idx, unprefixed_key = key[4:].split('_', 1)
             idx = int(idx)
