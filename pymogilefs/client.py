@@ -50,8 +50,8 @@ class Client:
             except:  # TODO: catch specific exceptions
                 pass
             else:
-                # Call close_open to tell the tracker where we wrote the file
-                # to and can start replicating it.
+                # Call create_close to tell the tracker where we wrote the
+                # file to and can start replicating it.
                 length = file_handle.tell()
                 kwargs = {
                     'fid': fid,
