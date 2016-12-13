@@ -144,6 +144,8 @@ class GetDomainsConfig(RequestConfig):
     @classmethod
     def parse_response_text(cls, response_text):
         pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        if 'domains' in pairs:
+            del pairs['domains']
         domains = {}
         pattern = r'^domain([0-9]+)class([0-9]+)([a-z]+)$'
         for key, value in pairs.items():

@@ -83,6 +83,17 @@ class DomainTestCase(TestCase):
             self.assertEqual(domains[25]['classes'][1]['name'], 'default')
             self.assertEqual(domains[41]['classes'][1]['mindevcount'], '2')
 
+    def test_get_domains_with_domains(self):
+        return_value = Response('OK domain15class1name=default&domain25class1'
+                                'name=default&domain41class1mindevcount=2&dom'
+                                'ains=70\r\n',
+                                GetDomainsConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            domains = Backend([]).get_domains().data['domains']
+            self.assertEqual(domains[15]['classes'][1]['name'], 'default')
+            self.assertEqual(domains[25]['classes'][1]['name'], 'default')
+            self.assertEqual(domains[41]['classes'][1]['mindevcount'], '2')
+
     def test_create_domain(self):
         return_value = Response('OK domain=testdomain\r\n', CreateDomainConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
