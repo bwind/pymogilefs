@@ -104,9 +104,9 @@ class GetHostsConfig(RequestConfig):
     @classmethod
     def parse_response_text(cls, response_text):
         pairs = dict([pair.split('=') for pair in response_text.split('&')])
-        hosts = {}
         if 'hosts' in pairs:
             del pairs['hosts']
+        hosts = {}
         for key, value in pairs.items():
             idx, unprefixed_key = key[4:].split('_', 1)
             idx = int(idx)
@@ -185,6 +185,8 @@ class GetDevicesConfig(RequestConfig):
     @classmethod
     def parse_response_text(cls, response_text):
         pairs = dict([pair.split('=') for pair in response_text.split('&')])
+        if 'devices' in pairs:
+            del pairs['devices']
         devices = {}
         for key, value in pairs.items():
             idx, unprefixed_key = key[3:].split('_', 1)

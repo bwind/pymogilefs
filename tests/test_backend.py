@@ -146,6 +146,17 @@ class DeviceTestCase(TestCase):
             self.assertIn(expected[0], devices['devices'].values())
             self.assertIn(expected[1], devices['devices'].values())
 
+    def test_get_devices_with_devices(self):
+        return_value = Response('OK dev27_mb_asof=&dev27_mb_total=1870562&dev'
+                                '26_mb_used=76672&devices=6\r\n',
+                                GetDevicesConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            devices = Backend([]).get_devices().data
+            expected = [{'mb_asof': '', 'mb_total': '1870562'},
+                        {'mb_used': '76672'}]
+            self.assertIn(expected[0], devices['devices'].values())
+            self.assertIn(expected[1], devices['devices'].values())
+
     def test_create_device(self):
         return_value = Response('OK \r\n', CreateDeviceConfig)
         with patch.object(Backend, 'do_request', return_value=return_value):
