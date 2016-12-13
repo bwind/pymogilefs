@@ -82,9 +82,12 @@ class Client:
                                 zone=zone,
                                 pathcount=pathcount)
 
-    def list_keys(self, prefix, after, limit):
-        return self._do_request(backend.ListKeysConfig,
-                                domain=self._domain,
-                                prefix=prefix,
-                                after=after,
-                                limit=limit)
+    def list_keys(self, prefix=None, after=None, limit=None):
+        kwargs = {'domain': self._domain}
+        if prefix is not None:
+            kwargs['prefix'] = prefix
+        if after is not None:
+            kwargs['after'] = after
+        if limit is not None:
+            kwargs['limit'] = limit
+        return self._do_request(backend.ListKeysConfig, **kwargs)

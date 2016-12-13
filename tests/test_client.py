@@ -58,6 +58,21 @@ class FileTestCase(TestCase):
             self.assertIn((21, 'test_file_0.634434876753_1480606271.32_4'),
                           response['keys'].items())
 
+    def test_list_keys_no_arguments(self):
+        return_value = Response('OK key_3=test_file_0.0129341319339_148060608'
+                                '0.74&key_21=test_file_0.634434876753_1480606'
+                                '271.32_4&key_count=666&next_after=after\r\n',
+                                ListKeysConfig)
+        with patch.object(Backend, 'do_request', return_value=return_value):
+            client = Client([], 'domain')
+            response = client.list_keys().data
+            self.assertEqual(response['key_count'], 666)
+            self.assertEqual(response['next_after'], 'after')
+            self.assertIn((3, 'test_file_0.0129341319339_1480606080.74'),
+                          response['keys'].items())
+            self.assertIn((21, 'test_file_0.634434876753_1480606271.32_4'),
+                          response['keys'].items())
+
     def test_get_paths(self):
         return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/25'
                                 '4/0056254995.fid&paths=2&path2=http://10.0.0'
