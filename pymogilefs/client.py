@@ -21,7 +21,7 @@ class Client:
         return self._do_request(backend.CreateCloseConfig, **kwargs)
 
     def get_file(self, key):
-        paths = self.get_paths(self._domain, key).data
+        paths = self.get_paths(key).data
         if not paths['paths']:
             raise FileNotFoundError(self._domain, key)
         for idx in sorted(paths['paths'].keys()):
