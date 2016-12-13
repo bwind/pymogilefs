@@ -64,7 +64,7 @@ class Client:
                 if _class is not None:
                     kwargs['class'] = _class
                 self._create_close(**kwargs)
-                return length
+                return path
         # TODO: raise proper exception
         raise  # FileNotStoredError
 
