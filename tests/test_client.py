@@ -37,7 +37,8 @@ class FileTestCase(TestCase):
             response = client.store_file(file_handle=file_handle,
                                          key='testkey',
                                          _class='testclass')
-            self.assertEqual(response,
+            self.assertEqual(response['length'], 4)
+            self.assertEqual(response['path'],
                              'http://10.0.0.1:7500/dev1/0/1/2/0000000001.fid')
 
     def test_list_keys(self):
