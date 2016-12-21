@@ -68,8 +68,10 @@ class Client:
         # TODO: raise proper exception
         raise  # FileNotStoredError
 
-    def delete_file(self):
-        raise NotImplementedError
+    def delete_file(self, key):
+        return self._do_request(backend.DeleteFileConfig,
+                                domain=self._domain,
+                                key=key)
 
     def rename_file(self):
         raise NotImplementedError

@@ -235,6 +235,15 @@ class CreateCloseConfig(RequestConfig):
         return {}
 
 
+class DeleteFileConfig(RequestConfig):
+    COMMAND = 'delete'
+
+    @classmethod
+    def parse_response_text(cls, response_text):
+        print(response_text)
+        return {}
+
+
 class ListKeysConfig(RequestConfig):
     COMMAND = 'list_keys'
 
