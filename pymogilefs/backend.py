@@ -249,6 +249,8 @@ class ListKeysConfig(RequestConfig):
 
     @classmethod
     def parse_response_text(cls, response_text):
+        if response_text == '':
+            return {}
         pairs = dict([pair.split('=') for pair in response_text.split('&')])
         key_count = pairs.pop('key_count')
         next_after = pairs.pop('next_after')

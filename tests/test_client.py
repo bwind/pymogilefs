@@ -6,7 +6,7 @@ from pymogilefs.backend import (
     CreateCloseConfig,
 )
 from pymogilefs.client import Client
-from pymogilefs.exceptions import FileNotFoundError
+from pymogilefs.exceptions import FileNotFoundError, MogilefsError
 from pymogilefs.response import Response
 from unittest import TestCase
 import io
@@ -72,6 +72,17 @@ class FileTestCase(TestCase):
                           response['keys'].items())
             self.assertIn((21, 'test_file_0.634434876753_1480606271.32_4'),
                           response['keys'].items())
+
+    def test_list_keys_no_results(self):
+        side_effect = MogilefsError(code='none_match', message='No keys match'
+                                    ' that pattern and after-value (if any).')
+        with patch('pymogilefs.client.Client._do_request') as do_request:
+            do_request.side_effect = side_effect
+            client = Client([], 'domain')
+            response = client.list_keys().data
+            self.assertEqual(response['key_count'], 0)
+            self.assertEqual(response['next_after'], None)
+            self.assertEqual(response['keys'], {})
 
     def test_get_paths(self):
         return_value = Response('OK path1=http://10.0.0.2:7500/dev38/0/056/25'

@@ -1,5 +1,6 @@
 from pymogilefs import backend
-from pymogilefs.exceptions import FileNotFoundError
+from pymogilefs.exceptions import FileNotFoundError, MogilefsError
+from pymogilefs.response import Response
 import requests
 
 
@@ -92,4 +93,17 @@ class Client:
             kwargs['after'] = after
         if limit is not None:
             kwargs['limit'] = limit
-        return self._do_request(backend.ListKeysConfig, **kwargs)
+        try:
+            return self._do_request(backend.ListKeysConfig, **kwargs)
+        except Exception as exception:
+            if exception.code == 'none_match':
+                # Empty result set from this list call should not result
+                # in an exception. Return a mocked Mogile response instead.
+                response = Response('OK \r\n', backend.ListKeysConfig)
+                response.data = {
+                    'key_count': 0,
+                    'next_after': None,
+                    'keys': {},
+                }
+                return response
+            raise exception
