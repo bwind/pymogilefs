@@ -18,5 +18,5 @@ setup(
     author_email='mailtobwind@gmail.com',
     license='MIT',
     packages=['pymogilefs'],
-    install_requires=['requests==2.12.3'],
+    install_requires=['requests>=2.12.3'],
 )
