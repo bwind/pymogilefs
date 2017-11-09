@@ -22,7 +22,7 @@ class FileTestCase(TestCase):
         # fake_put is used to read the full contents of `data`, in order for
         # Client.store_file to return the correct position in the file_handle
         # through seek().
-        def fake_put(path, data):
+        def fake_put(path, data, timeout=None):
             data.read()
         create_open = Response('OK paths=1&path_1=http://10.0.0.1:7500/dev1/0'
                                '/1/2/0000000001.fid&fid=56320928&dev_count=1&'
