@@ -21,20 +21,20 @@ class Client:
     def _create_close(self, **kwargs):
         return self._do_request(backend.CreateCloseConfig, **kwargs)
 
-    def get_file(self, key):
+    def get_file(self, key, timeout=None):
         paths = self.get_paths(key).data
         if not paths['paths']:
             raise FileNotFoundError(self._domain, key)
         for idx in sorted(paths['paths'].keys()):
             try:
-                r = requests.get(paths['paths'][idx], stream=True)
+                r = requests.get(paths['paths'][idx], stream=True, timeout=timeout)
                 return r.raw
             except:
                 pass
         # TODO: raise proper exception
         raise  # UnknownFileError
 
-    def store_file(self, file_handle, key, _class=None):
+    def store_file(self, file_handle, key, _class=None, timeout=None):
         kwargs = {'domain': self._domain,
                   'key': key,
                   'fid': 0,
@@ -47,7 +47,7 @@ class Client:
             path = paths['paths'][idx]
             devid = paths['devids'][idx]
             try:
-                requests.put(path, data=file_handle)
+                requests.put(path, data=file_handle, timeout=timeout)
             except:  # TODO: catch specific exceptions
                 pass
             else:
