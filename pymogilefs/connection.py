@@ -14,8 +14,8 @@ class Connection:
 
     def _connect(self):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._sock.connect((self._host, self._port))
         self._sock.settimeout(TIMEOUT)
+        self._sock.connect((self._host, self._port))        
 
     def _recv_all(self):
         response_text = b''
