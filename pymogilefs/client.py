@@ -1,11 +1,14 @@
+import logging
+
 from pymogilefs import backend
 from pymogilefs.exceptions import FileNotFoundError, MogilefsError
 from pymogilefs.response import Response
 import requests
-
+from requests import RequestException
 
 CHUNK_SIZE = 4096
 
+log = logging.getLogger(__name__)
 
 class Client:
     def __init__(self, trackers, domain):
@@ -21,18 +24,28 @@ class Client:
     def _create_close(self, **kwargs):
         return self._do_request(backend.CreateCloseConfig, **kwargs)
 
-    def get_file(self, key, timeout=None):
-        paths = self.get_paths(key).data
+    def get_file(self, key, timeout=None, zone='alt'):
+        """
+        Make sure to consume all the data so the connection could be closed.
+
+        :param key:
+        :param timeout:
+        :return:
+        """
+        paths = self.get_paths(key, zone=zone).data
         if not paths['paths']:
             raise FileNotFoundError(self._domain, key)
         for idx in sorted(paths['paths'].keys()):
             try:
                 r = requests.get(paths['paths'][idx], stream=True, timeout=timeout)
+                r.raise_for_status()
                 return r.raw
-            except:
-                pass
+            except RequestException as e:
+                log.warning('Get file from the url in idx "%s" failed. Try another one.', idx, exc_info=e)
+                r.close()
         # TODO: raise proper exception
-        raise  # UnknownFileError
+        #raise  # UnknownFileError
+            raise Exception('No usable location to get file.')
 
     def store_file(self, file_handle, key, _class=None, timeout=None):
         kwargs = {'domain': self._domain,
@@ -47,9 +60,11 @@ class Client:
             path = paths['paths'][idx]
             devid = paths['devids'][idx]
             try:
-                requests.put(path, data=file_handle, timeout=timeout)
-            except:  # TODO: catch specific exceptions
-                pass
+                r = requests.put(path, data=file_handle, timeout=timeout)
+                r.raise_for_status()
+            except RequestException as e:
+                log.warning('Put file to the url in idx "%s" failed. Try another one.', idx, exc_info=e)
+                file_handle.seek(0)
             else:
                 # Call create_close to tell the tracker where we wrote the
                 # file to and can start replicating it.
@@ -67,7 +82,8 @@ class Client:
                 self._create_close(**kwargs)
                 return {'path': path, 'length': length}
         # TODO: raise proper exception
-        raise  # FileNotStoredError
+        #raise  # UnknownFileError
+        raise Exception('No usable location to put file.')
 
     def delete_file(self, key):
         return self._do_request(backend.DeleteFileConfig,
@@ -78,6 +94,7 @@ class Client:
         raise NotImplementedError
 
     def get_paths(self, key, noverify=True, zone='alt', pathcount=2):
+        # TODO: timeout?
         return self._do_request(backend.GetPathsConfig,
                                 domain=self._domain,
                                 key=key,
