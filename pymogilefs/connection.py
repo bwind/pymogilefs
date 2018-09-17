@@ -28,9 +28,13 @@ class Connection:
                 break
         return response_text.decode()
 
+    def close(self):
+        self._sock.close()
+
     def do_request(self, request):
         assert isinstance(request, Request)
         self._sock.send(bytes(request))
         response_text = self._recv_all()
+        # TODO: do not close connection here.
         self._sock.close()
         return Response(response_text, request.config)
