@@ -29,6 +29,13 @@ class ConnectionTest(unittest.TestCase):
             connection._connect()
             connection._sock.settimeout.assert_called_with(10)
 
+    def test_noop(self):
+        connection = Connection('host', 1)
+        connection._sock = mock.MagicMock()
+        buf = io.BytesIO(b'OK\r\n')
+        connection._sock.recv = lambda buf_size: buf.read()
+        connection.test_connection()
+
     def test_recv_all(self):
         connection = Connection('host', 1)
         connection._sock = mock.MagicMock()
