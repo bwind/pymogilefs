@@ -1,3 +1,4 @@
+from pymogilefs.exceptions import MogilefsError
 from pymogilefs.response import Response
 from pymogilefs.request import Request
 import socket
@@ -16,6 +17,12 @@ class Connection:
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._sock.settimeout(TIMEOUT)
         self._sock.connect((self._host, self._port))        
+
+    def noop(self):
+        self._sock.send('noop\r\n'.encode())
+        response_text = self._recv_all()
+        if 'OK' not in response_text:
+            raise MogilefsError('NOT OK', 'noop failed')
 
     def _recv_all(self):
         response_text = b''
