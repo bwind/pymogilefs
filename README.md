@@ -9,7 +9,7 @@ There are a few Python client projects for MogileFS around (pymogile,
 python-mogilefs-client), however these projects seem to be outdated and
 abandoned. This client was written from scratch, uses the excellent
 [requests](https://github.com/kennethreitz/requests) library to handle all HTTP
-requests and is compatible with Python versions 2.7 and 3.3-3.5.
+requests and is compatible with Python versions 2.7 and 3.4-3.7.
 
 A handfull of management commands haven't been implemented (yet). These include
 slave, rebalance, and fsck related commands.
