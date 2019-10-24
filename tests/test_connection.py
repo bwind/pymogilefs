@@ -34,7 +34,7 @@ class ConnectionTest(unittest.TestCase):
         connection._sock = mock.MagicMock()
         buf = io.BytesIO(b'OK\r\n')
         connection._sock.recv = lambda buf_size: buf.read()
-        connection.test_connection()
+        connection.noop()
 
     def test_recv_all(self):
         connection = Connection('host', 1)
