@@ -1,3 +1,9 @@
+import logging
+import random
+import socket
+import time
+
+from pymogilefs.exceptions import MogilefsError
 from pymogilefs.request import Request
 from pymogilefs.connection import Connection
 import re
@@ -6,22 +12,64 @@ import re
 Backend manages a pool of trackers and balances load between them.
 """
 
-# TODO: mark tracker as dead
+# TODO: Implement a real pool
 
 
 MAX_RETRIES = 5
+FORGIVENESS_TIME = 5 * 60
 
+log = logging.getLogger(__name__)
 
 class Backend:
     def __init__(self, trackers):
-        self._trackers = [tracker.split(':') for tracker in trackers]
+        self._trackers = [tracker.split(':') + [0] for tracker in trackers]
+
+    def _get_not_failed_lately_connection_idx(self):
+        max_try = 1000
+        for j in range(max_try):
+            i = random.randrange(len(self._trackers))
+            host, port, last_failed_time = self._trackers[i]
+
+            if time.time() - last_failed_time < FORGIVENESS_TIME:
+                continue
+
+            return i
+
+        raise Exception('No connection not failed lately.')
 
     def _get_connection(self):
-        # TODO: Try random trackers, implement retries
-        host, port = self._trackers[0]
-        connection = Connection(host, port)
-        connection._connect()
-        return connection
+        connection = None
+        max_try = min(MAX_RETRIES, len(self._trackers))
+        for j in range(max_try):
+            i = self._get_not_failed_lately_connection_idx()
+            host, port, last_failed_time = self._trackers[i]
+            log.debug("Try #%s/%s time using tracker: %s", j + 1, max_try, self._trackers[i])
+
+            candidate = Connection(host, port)
+            try:
+                candidate._connect()
+            except socket.error as exc:
+                log.warning("Caught exception socket.error", exc_info=exc)
+                self._trackers[i][2] = time.time()
+                continue
+            try:
+                candidate.noop()
+            except MogilefsError:
+                log.warning("Caught exception when execute noop command", exc_info=exc)
+                self._trackers[i][2] = time.time()
+                try:
+                    candidate.close()
+                except Exception:
+                    pass
+                continue
+
+            connection = candidate
+            break
+
+        if connection:
+            return connection
+        else:
+            raise Exception('No connection usable.')
 
     def do_request(self, config, **kwargs):
         return self._get_connection().do_request(Request(config, **kwargs))
